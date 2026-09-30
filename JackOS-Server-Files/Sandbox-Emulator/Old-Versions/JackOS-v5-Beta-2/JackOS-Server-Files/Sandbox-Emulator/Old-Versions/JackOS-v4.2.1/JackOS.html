@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>JackOS v4.2.1</title>
+<link rel="stylesheet" href="JackOS.css">
+</head>
+<body>.
+<section id="startup" class="screen active">
+  <div id="main-text" class="fade-text">🐵<br>JackOS<br>v4.2.1</div>
+  <div id="popup" class="popup" style="display:none;">
+    <p>ACTIVATION ERROR! <br><br>This software has not been activated.</p>
+    <p>Please put in your product activation key below to successfully activate this software:</p>
+    <input type="text" id="activation-key" placeholder="Enter activation key">
+    <button onclick="Startup_checkKey()">Activate</button>
+  </div>
+</section>
+
+<!-- Setup -->
+<section id="setup" class="screen">
+  <div class="setup-card">
+    <div class="setup-header">
+      <div class="logo">🧩</div>
+      <div>
+        <h2>Welcome to JackOS Setup</h2>
+        <div style="opacity:.8; font-size:14px;">Add at least one account. The <b>first</b> account you add becomes <b>Admin</b>.</div>
+      </div>
+    </div>
+    <div class="setup-row">
+      <input id="su-name" type="text" placeholder="Account name (e.g. Jack)" autocomplete="off"/>
+      <input id="su-pass" type="password" placeholder="Password" autocomplete="new-password"/>
+    </div>
+    <div class="setup-row single">
+      <input id="su-pass2" type="password" placeholder="Confirm password" autocomplete="new-password"/>
+    </div>
+    <div class="setup-actions">
+      <button class="btn" onclick="Setup_addUser()">Add account</button>
+      <button class="btn ghost" onclick="Setup_clearInputs()">Clear</button>
+      <div id="setupMsg" style="margin-left:auto; color:#cfe9ff; min-height:22px;"></div>
+    </div>
+    <div class="setup-list" id="setupList"></div>
+    <div class="setup-actions" style="justify-content:flex-end;">
+      <button class="btn ghost" onclick="show('login', true)">Back to Login</button>
+      <button class="btn" id="setupFinishBtn" onclick="Setup_finish()" disabled>Finish & Continue</button>
+    </div>
+  </div>
+</section>
+
+<!-- Login -->
+<section id="login" class="screen">
+  <div class="login-container">
+    <div class="profile-circle">👤</div>
+    <div id="current-user">--</div>
+    <input type="password" id="password" placeholder="Password" autocomplete="current-password" />
+    <button id="loginBtn" onclick="Login_login()">Login</button>
+      <button id="secqForgotBtn" class="btn ghost" style="margin-top:8px;" onclick="SecQ_openRecovery()">Forgot password?</button>
+    <div class="user-switch" id="userSwitch"></div>
+    <p id="message"></p>
+  </div>
+</section>
+
+<!-- Transition -->
+<section id="transition" class="screen">
+  <div class="trans-card">
+    <div class="trans-title" id="transTitle">Welcome</div>
+    <div class="trans-sub">Preparing your desktop…</div>
+    <div class="spinner" aria-label="Loading"></div>
+  </div>
+</section>
+
+<!-- Desktop / Home -->
+<section id="desktop" class="screen">
+  <div class="desktop">
+
+    <!-- Desktop icons for all apps -->
+    <div class="icon" data-app="explorer">
+      <div class="icon-box" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 7h6l2 2h10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" fill="#ffcc66"/><path d="M21 9H3" stroke="#b3832e" stroke-width="1.2"/></svg>
+      </div><div>Explorer</div>
+    </div>
+
+    <div class="icon" data-app="browser">
+      <div class="icon-box" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#9dd0ff" stroke-width="1.4"/><path d="M3 12h18M12 3c2.5 3 2.5 15 0 18M7 5.5c1.6 1.2 2.9 3.6 3 6.5-.1 2.9-1.4 5.3-3 6.5M17 5.5c-1.6 1.2-2.9 3.6-3 6.5.1 2.9 1.4 5.3 3 6.5" stroke="#9dd0ff" stroke-width="1"/></svg>
+      </div><div>Browser</div>
+    </div>
+
+    <div class="icon" data-app="photos">
+      <div class="icon-box" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" ry="2" stroke="#77e0a0" stroke-width="1.4"/><circle cx="16.5" cy="9" r="2" fill="#77e0a0"/><path d="M5 17l4.5-5 3.5 4 2-2L19 17H5z" fill="#77e0a0" opacity=".8"/></svg>
+      </div><div>Photos</div>
+    </div>
+
+    <div class="icon" data-app="camera">
+      <div class="icon-box" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2" ry="2" stroke="#ffd66b" stroke-width="1.4"/><rect x="7" y="4" width="5" height="3" rx="1" fill="#ffd66b"/><circle cx="12" cy="12.5" r="4" stroke="#ffd66b" stroke-width="1.4"/><circle cx="12" cy="12.5" r="2.2" fill="#ffd66b" opacity="0.8"/></svg>
+      </div><div>Camera</div>
+    </div>
+
+    <div class="icon" data-app="calculator">
+      <div class="icon-box" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2" ry="2" stroke="#ffd66b" stroke-width="1.4"/><rect x="6" y="5" width="12" height="4" fill="#ffd66b" opacity="0.7"/><rect x="6" y="11" width="4" height="3.5" fill="#9dd0ff"/><rect x="10" y="11" width="4" height="3.5" fill="#9dd0ff"/><rect x="14" y="11" width="4" height="3.5" fill="#9dd0ff"/><rect x="6" y="15.5" width="4" height="3.5" fill="#9dd0ff"/><rect x="10" y="15.5" width="4" height="3.5" fill="#9dd0ff"/><rect x="14" y="15.5" width="4" height="3.5" fill="#1e8e3e"/></svg>
+      </div><div>Calculator</div>
+    </div>
+
+    <div class="icon" data-app="settings">
+      <div class="icon-box" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="3" stroke="#ffd66b" stroke-width="1.4"/>
+          <path d="M12 3v2M12 19v2M3 12h2M19 12h2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M5 19l1.4-1.4" stroke="#ffd66b" stroke-width="1.2"/>
+        </svg>
+      </div><div>Settings</div>
+    </div>
+
+    <!-- Photos app window -->
+    <div id="photosApp">
+      <div id="photosHeader"><h2>Photos</h2>
+        <div class="actions">
+          <label class="explorer-btn" for="photosInput">Import Photos</label>
+          <input id="photosInput" type="file" accept="image/*" multiple style="display:none;" />
+          <button class="explorer-btn ghost" onclick="Photos_close()">Close</button>
+        </div>
+      </div>
+      <div id="photosBody"></div>
+    </div>
+
+    <!-- Explorer window -->
+    <div id="explorer">
+      <div class="header">
+        <div class="title">Explorer</div>
+        <div class="controls">
+          <label class="explorer-btn" for="importInput">Import</label>
+          <input id="importInput" type="file" multiple style="display:none;" />
+          <button class="explorer-btn ghost" onclick="Explorer_openJackOSDrive()">JackOS Drive</button>
+          <button class="explorer-btn ghost" onclick="Explorer_createFile()">New File</button>
+          <button class="explorer-btn ghost" onclick="Explorer_createFolder()">New Folder</button>
+          <button class="explorer-btn" id="rename-btn" style="display:none;" onclick="Explorer_rename()">Rename</button>
+          <button class="explorer-btn" id="move-btn" style="display:none;" onclick="Explorer_openDestDialog('move')">Move…</button>
+          <button class="explorer-btn" id="dup-btn" style="display:none;" onclick="Explorer_openDestDialog('duplicate')">Duplicate…</button>
+          <button class="explorer-btn" id="delete-btn" style="display:none;" onclick="Explorer_deleteSelected()">Delete</button>
+          <button class="explorer-btn" id="save-to-drive-btn" style="display:none;" onclick="Explorer_openDestDialog('saveas')">Save to Drive…</button>
+          <button class="explorer-btn ghost" id="export-btn" style="display:none;" onclick="Explorer_exportSelected()">Export</button>
+          <button class="explorer-btn" id="multiToggle" onclick="Explorer_toggleMulti()">Select</button>
+          <button class="explorer-btn ghost" onclick="Explorer_close()">Close</button>
+        </div>
+      </div>
+      <div class="crumbs" id="explorer-breadcrumb"></div>
+      <div id="multiBar"><div id="multiCount">0 selected</div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <button class="explorer-btn" onclick="Explorer_manyMove()">Move Selected…</button>
+          <button class="explorer-btn" onclick="Explorer_manyDuplicate()">Duplicate Selected…</button>
+          <button class="explorer-btn ghost" onclick="Explorer_manyExport()">Export Selected</button>
+          <button class="explorer-btn" style="background:#a83434" onclick="Explorer_manyDelete()">Delete Selected</button>
+          <button class="explorer-btn ghost" onclick="Explorer_clearMulti()">Clear</button>
+        </div>
+      </div>
+      <div class="body">
+        <div class="pane list"><ul id="explorer-list"></ul></div>
+        <div class="pane preview">
+          <div id="explorer-info" style="margin-bottom:6px; font-size:13px; color:#bbb;"></div>
+          <pre id="explorer-preview" style="display:none;"></pre>
+          <textarea id="explorer-editor" style="display:none;"></textarea>
+          <div class="footer" style="margin-top:8px; display:flex; gap:8px;">
+            <button class="explorer-btn" id="set-wallpaper-btn" style="display:none;" onclick="Explorer_setWallpaperSelected()">Set as background</button>
+            <button class="explorer-btn ghost" onclick="Explorer_clearPreview()">Clear</button>
+            <button class="explorer-btn" id="save-btn" style="display:none;" onclick="Explorer_save()">Save (FS Access)</button>
+          </div>
+        </div>
+      </div>
+      <div id="destDialog" style="position:absolute; inset:0; display:none; align-items:center; justify-content:center; z-index:70;">
+        <div class="shade" onclick="Explorer_closeDest()" style="position:absolute; inset:0; background:rgba(0,0,0,0.6);"></div>
+        <div class="panel" style="position:relative; width:min(560px, 92%); background:#222; border:1px solid #444; border-radius:10px; padding:12px; color:#fff; z-index:71;">
+          <h3 id="destTitle" style="margin:0 0 8px 0;">Choose destination</h3>
+          <div id="destCrumbs" style="font-size:12px; color:#bbb; margin:6px 0;"></div>
+          <div id="destList" style="background:#111; border:1px solid #333; border-radius:8px; padding:8px; height:220px; overflow:auto;"></div>
+          <div id="destNameWrap" style="display:none; gap:6px; align-items:center; margin-top:8px;">
+            <label for="destName">Name:</label>
+            <input id="destName" type="text" placeholder="file name" style="width:100%; padding:8px; border-radius:6px; border:1px solid #555; background:#111; color:#fff;"/>
+          </div>
+          <div id="destFooter" style="margin-top:8px; display:flex; gap:8px; align-items:center; justify-content:flex-end;">
+            <button class="explorer-btn ghost" onclick="Explorer_destNewFolder()">New Folder</button>
+            <button class="explorer-btn" onclick="Explorer_confirmDest()">Select</button>
+            <button class="explorer-btn ghost" onclick="Explorer_closeDest()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Browser window -->
+    <div id="browserWin">
+      <div id="browserBar">
+        <button id="browserBack" title="Back">⟵</button>
+        <button id="browserFwd" title="Forward">⟶</button>
+        <button id="browserRefresh" title="Refresh">⟳</button>
+        <input id="browserUrl" placeholder="Enter URL" value="purplemash.com" />
+        <button id="browserGo" title="Go">Go</button>
+        <button id="browserOpenExt" title="Open in new tab">↗</button>
+        <button id="browserClose" title="Close">❌</button>
+      </div>
+      <div id="browserArea">
+        <iframe id="browserFrame" sandbox="allow-forms allow-scripts allow-popups allow-same-origin allow-top-navigation-by-user-activation" referrerpolicy="no-referrer"></iframe>
+        <div id="browserFallback">
+          <div>Some sites block being shown inside apps for security (X-Frame-Options/COEP). If the page looks empty, tap <b>Open in new tab</b>.</div>
+          <button id="browserOpenExt2">Open current page in new tab</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calculator window -->
+    <div id="calcApp">
+      <div id="calcHeader">
+        <div class="title">Calculator</div>
+        <div class="actions"><button onclick="Calculator_close()">Close</button></div>
+      </div>
+      <div id="calcBody">
+        <div id="calcDisplay">0</div>
+        <div id="calcGrid">
+          <button class="calc-btn fn" data-key="C">C</button>
+          <button class="calc-btn fn" data-key="back">⌫</button>
+          <button class="calc-btn fn" data-key="±">±</button>
+          <button class="calc-btn op" data-key="÷">÷</button>
+          <button class="calc-btn" data-key="7">7</button>
+          <button class="calc-btn" data-key="8">8</button>
+          <button class="calc-btn" data-key="9">9</button>
+          <button class="calc-btn op" data-key="×">×</button>
+          <button class="calc-btn" data-key="4">4</button>
+          <button class="calc-btn" data-key="5">5</button>
+          <button class="calc-btn" data-key="6">6</button>
+          <button class="calc-btn op" data-key="-">−</button>
+          <button class="calc-btn" data-key="1">1</button>
+          <button class="calc-btn" data-key="2">2</button>
+          <button class="calc-btn" data-key="3">3</button>
+          <button class="calc-btn" data-key="+">+</button>
+          <button class="calc-btn fn" data-key="%">%</button>
+          <button class="calc-btn" data-key="0">0</button>
+          <button class="calc-btn" data-key=".">.</button>
+          <button class="calc-btn eq" data-key="=">=</button>
+        </div>
+      </div>
+    </div>
+
+<!-- JCam window -->
+    <div id="jcamApp">
+      <div id="jcamHeader">
+        <div class="title">Camera</div>
+        <div class="actions">
+          <button id="jcamFlipBtn" onclick="JCam_flip()">Flip</button>
+          <button id="jcamSaveBtn" onclick="JCam_save()" style="display:none;">Save</button>
+          <button id="jcamRetakeBtn" onclick="JCam_retake()" style="display:none;">Retake</button>
+          <button onclick="JCam_close()">Close</button>
+        </div>
+      </div>
+      <div id="jcamBody">
+        <div class="jcam-top">
+          <video id="jcamVideo" playsinline muted></video>
+          <canvas id="jcamCanvas" style="display:none;"></canvas>
+          <div class="jcam-overlay">
+            <button class="jcam-btn" onclick="JCam_flip()">Flip</button>
+            <button class="jcam-btn shutter" id="jcamShutterBtn" onclick="JCam_shoot()"></button>
+          </div>
+        </div>
+        <div id="jcamStatus">Ready</div>
+      </div>
+    </div>
+
+    <!-- Settings window -->
+<div id="settingsWin">
+  <div id="settingsHeader">
+    <div class="title">Settings</div>
+    <div class="actions"><button class="explorer-btn ghost" onclick="Settings_close()">Close</button></div>
+  </div>
+  <div id="settingsBody">
+    <!-- Main settings menu (default view) -->
+    <div class="set-panel" id="settingsMain">
+      <h3 style="margin-top:0;">Settings</h3>
+      <div class="set-actions" style="margin-top:6px;">
+  <button class="explorer-btn" onclick="Settings_showAccounts()">Accounts</button>
+  <button class="explorer-btn" onclick="Settings_showData()">Data</button>
+</div>
+    </div>
+
+    <!-- Accounts panel (hidden until user clicks "Accounts") -->
+    <div class="set-panel" id="settingsAccountsPanel" style="display:none;">
+      <h3 style="margin-top:0;">Accounts</h3>
+      <div id="settingsAccList"></div>
+      <div class="set-actions" style="margin-top:10px;">
+        <button class="explorer-btn" onclick="Settings_addAccountUI()">Add Account</button>
+        <button class="explorer-btn ghost" onclick="Settings_backToMain()">Back</button>
+      </div>
+      <div style="margin-top:8px; font-size:12px; color:#bbb;">
+        Only <b>Admin</b> can add, remove, change passwords, or transfer admin. Non-admins will need to verify an admin account.
+      </div>
+    </div>
+<!-- Data panel -->
+<div class="set-panel" id="settingsDataPanel" style="display:none;">
+  <h3 style="margin-top:0;">Data</h3>
+
+  <div class="set-actions" style="margin-top:6px;">
+    <button class="explorer-btn" onclick="Data_openSystem()">System</button>
+<button class="explorer-btn" onclick="Data_openPhotos()">Photos</button>
+<button class="explorer-btn" onclick="Data_openDrive()">JackOSDrive</button>
+  </div>
+
+  <div style="margin-top:10px; font-size:12px; color:#bbb;">
+    Data management options will appear here.
+  </div>
+
+<div id="dataActions" style="margin-top:12px;"></div>
+
+  <div class="set-actions" style="margin-top:12px;">
+    <button class="explorer-btn ghost" onclick="Settings_backToMain()">Back</button>
+  </div>
+</div>
+  </div>
+</div>
+
+    <!-- Admin Auth Dialog -->
+    <div id="adminAuthDialog" class="modal">
+      <div class="shade" onclick="Admin_cancel()"></div>
+      <div class="panel">
+        <h3>Admin authorisation required</h3>
+        <div class="row"><input id="adminAuthName" placeholder="Admin username"/><input id="adminAuthPass" type="password" placeholder="Admin password"/></div>
+        <div id="adminAuthMsg" style="color:#ffd1d1; min-height:20px;"></div>
+        <div class="footer">
+          <button class="btn ghost" onclick="Admin_cancel()">Cancel</button>
+          <button class="btn" onclick="Admin_verifyAndContinue()">Verify</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add / Change Pw / Remove dialogs -->
+    <div id="addAccDialog" class="modal"><div class="shade" onclick="AddAcc_cancel()"></div><div class="panel">
+      <h3>Add account</h3>
+      <div class="row"><input id="addAccName" placeholder="Account name"/><input id="addAccPass" type="password" placeholder="Password"/></div>
+      <div class="row single"><input id="addAccPass2" type="password" placeholder="Confirm password"/></div>
+      <div id="addAccMsg" style="color:#ffd1d1; min-height:20px;"></div>
+      <div class="footer"><button class="btn ghost" onclick="AddAcc_cancel()">Cancel</button><button class="btn" onclick="AddAcc_save()">Add</button></div>
+    </div></div>
+
+    <div id="chgPwDialog" class="modal"><div class="shade" onclick="ChgPw_cancel()"></div><div class="panel">
+      <h3>Change password</h3>
+      <div class="row single"><input id="chgPwUser" disabled /></div>
+      <div class="row"><input id="chgPw1" type="password" placeholder="New password"/><input id="chgPw2" type="password" placeholder="Confirm new password"/></div>
+      <div id="chgPwMsg" style="color:#ffd1d1; min-height:20px;"></div>
+      <div class="footer"><button class="btn ghost" onclick="ChgPw_cancel()">Cancel</button><button class="btn" onclick="ChgPw_save()">Save</button></div>
+    </div></div>
+
+    <div id="rmAccDialog" class="modal"><div class="shade" onclick="RmAcc_cancel()"></div><div class="panel">
+      <h3>Remove account</h3>
+      <div id="rmAccText" style="margin:6px 0 10px 0;"></div>
+      <div id="rmAccMsg" style="color:#ffd1d1; min-height:20px;"></div>
+      <div class="footer"><button class="btn ghost" onclick="RmAcc_cancel()">Cancel</button><button class="btn danger" onclick="RmAcc_do()">Remove</button></div>
+    </div></div>
+
+  </div>
+
+  <!-- Taskbar -->
+  <div class="taskbar">
+    <div class="start-btn" onclick="Desktop_toggleStartMenu()"><div class="start-icon"></div><span>Start</span></div>
+    <div class="tray">
+      <div class="seg" id="volWrap">
+        <span>Volume:</span>
+        <input id="volSlider" type="range" min="0" max="100" value="60" />
+        <span id="volPercent">60%</span>
+        <button id="volTest" title="Play test tone" onclick="Volume_testTone()">Test</button>
+      </div>
+      <div class="seg"><span id="date">--</span></div>
+      <div class="seg"><span id="clock">--:--</span></div>
+    </div>
+  </div>
+
+  <!-- Start menu element -->
+  <div class="start-menu" id="startMenu">
+    <div class="account-icon" onclick="Desktop_logout()" style="width:50px; height:50px; background:rgba(255,255,255,0.2); border-radius:50%; margin:10px auto; display:flex; align-items:center; justify-content:center; font-size:24px; cursor:pointer;">👤</div>
+    <div class="menu-section">
+      <h3 style="margin:.25rem 0 .5rem 0;">All Programs</h3>
+      <div class="menu-item" data-app="explorer"><span class="mi-ico"><svg viewBox="0 0 24 24" fill="none"><path d="M3 7h6l2 2h10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" fill="#ffcc66"/><path d="M21 9H3" stroke="#b3832e" stroke-width="1.2"/></svg></span><span>Explorer</span></div>
+      <div class="menu-item" data-app="browser"><span class="mi-ico"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#9dd0ff" stroke-width="1.4"/><path d="M3 12h18M12 3c2.5 3 2.5 15 0 18M7 5.5c1.6 1.2 2.9 3.6 3 6.5-.1 2.9-1.4 5.3-3 6.5M17 5.5c-1.6 1.2-2.9 3.6-3 6.5.1 2.9 1.4 5.3 3 6.5" stroke="#9dd0ff" stroke-width="1"/></svg></span><span>Browser</span></div>
+      <div class="menu-item" data-app="photos"><span class="mi-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" ry="2" stroke="#77e0a0" stroke-width="1.4"/><circle cx="16.5" cy="9" r="2" fill="#77e0a0"/><path d="M5 17l4.5-5 3.5 4 2-2L19 17H5z" fill="#77e0a0" opacity=".8"/></svg></span><span>Photos</span></div>
+      <div class="menu-item" data-app="camera"><span class="mi-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2" ry="2" stroke="#ffd66b" stroke-width="1.4"/><rect x="7" y="4" width="5" height="3" rx="1" fill="#ffd66b"/><circle cx="12" cy="12.5" r="4" stroke="#ffd66b" stroke-width="1.4"/><circle cx="12" cy="12.5" r="2.2" fill="#ffd66b" opacity="0.8"/></svg></span><span>Camera</span></div>
+      <div class="menu-item" data-app="calculator"><span class="mi-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2" ry="2" stroke="#ffd66b" stroke-width="1.4"/><rect x="6" y="5" width="12" height="4" fill="#ffd66b" opacity="0.7"/><rect x="6" y="11" width="4" height="3.5" fill="#9dd0ff"/><rect x="10" y="11" width="4" height="3.5" fill="#9dd0ff"/><rect x="14" y="11" width="4" height="3.5" fill="#9dd0ff"/><rect x="6" y="15.5" width="4" height="3.5" fill="#9dd0ff"/><rect x="10" y="15.5" width="4" height="3.5" fill="#9dd0ff"/><rect x="14" y="15.5" width="4" height="3.5" fill="#1e8e3e"/></svg></span><span>Calculator</span></div>
+      <div class="menu-item" data-app="settings"><span class="mi-ico"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="#ffd66b" stroke-width="1.4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M5 19l1.4-1.4" stroke="#ffd66b" stroke-width="1.2"/></svg></span><span>Settings</span></div>
+    </div>
+    <div class="menu-section" style="margin-top:8px;">
+      <h3 style="margin:.25rem 0 .5rem 0;">Power</h3>
+      <div class="power-options" style="display:flex; gap:8px; flex-wrap:wrap; justify-content:space-around;">
+        <div class="menu-item" onclick="Desktop_lock()">Lock</div>
+        <div class="menu-item" onclick="Desktop_shutdown()">Shut Down</div>
+        <div class="menu-item" onclick="Desktop_restart()">Restart</div>
+        <div class="menu-item" onclick="Desktop_sleep()">Sleep</div>
+        <div class="menu-item" style="background:#6b1b1b;" onclick="Desktop_resetJackOS_guarded()">Reset JackOS</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div id="fadeOverlay"></div>
+<div id="shutdownOverlay" style="display:none; position:fixed; inset:0; background:#000; z-index:1100; pointer-events:auto;"></div>
+<div id="sleepOverlay" style="display:none; position:fixed; inset:0; background:#000; z-index:1100; pointer-events:auto;"></div>
+<div id="overlay" style="position:fixed; inset:0; display:none; align-items:center; justify-content:center; font-size:28px; z-index:1000; background:rgba(0,0,0,1); text-align:center; line-height:1.4;"></div>
+
+
+
+  <!-- Security Questions: Setup Wizard (3 of 15) -->
+  <div id="secqSetupDialog" class="modal" style="display:none;">
+    <div class="shade"></div>
+    <div class="panel">
+      <h3>Set up security questions</h3>
+      <div style="opacity:.85; margin-bottom:6px;">Pick <b>3</b> questions and enter your answers. You can edit these later in Settings.</div>
+      <div class="row single">
+        <select id="sqs_p1"></select>
+        <input id="sqs_a1" placeholder="Answer 1"/>
+      </div>
+      <div class="row single">
+        <select id="sqs_p2"></select>
+        <input id="sqs_a2" placeholder="Answer 2"/>
+      </div>
+      <div class="row single">
+        <select id="sqs_p3"></select>
+        <input id="sqs_a3" placeholder="Answer 3"/>
+      </div>
+      <div id="sqs_msg" style="color:#ffd1d1;min-height:20px;"></div>
+      <div class="footer">
+        
+        <button class="btn" onclick="SecQ_setupSave()">Save</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Security Questions: Recovery Modal (Reset Password; 3 answers) -->
+  <div id="secqRecover" class="modal" style="display:none;">
+    <div class="shade" onclick="SecQ_closeRecovery()"></div>
+    <div class="panel">
+      <h3>Password recovery</h3>
+      <div class="row single"><select id="secqRecoverUser"></select></div>
+      <div id="secqRecoverQuestions" style="margin:6px 0 8px 0; opacity:.9;"></div>
+      <div class="row single"><input id="secqAns1" placeholder="Answer 1"/></div>
+      <div class="row single"><input id="secqAns2" placeholder="Answer 2"/></div>
+      <div class="row single"><input id="secqAns3" placeholder="Answer 3"/></div>
+      <div class="row"><input id="secqNew1" type="password" placeholder="New password"/><input id="secqNew2" type="password" placeholder="Confirm new password"/></div>
+      <div id="secqRecoverMsg" style="color:#ffd1d1; min-height:20px;"></div>
+      <div class="footer">
+        <button class="btn ghost" onclick="SecQ_closeRecovery()">Cancel</button>
+        <button class="btn" onclick="SecQ_tryRecover()">Reset password</button>
+      </div>
+    </div>
+  </div>
+
+
+<!-- Security Questions: Manage (per-account) -->
+<div id="secqManageDialog" class="modal" style="display:none;">
+  <div class="shade" onclick="SecQM_close()"></div>
+  <div class="panel">
+    <h3>Security questions -- <span id="sqm_user"></span></h3>
+    <div style="opacity:.85; margin-bottom:6px;">Pick <b>3</b> questions and enter your answers for this account.</div>
+    <div class="row">
+      <select id="sqm_q1p"></select>
+      <input id="sqm_a1" placeholder="Answer 1"/>
+    </div>
+    <div class="row">
+      <select id="sqm_q2p"></select>
+      <input id="sqm_a2" placeholder="Answer 2"/>
+    </div>
+    <div class="row">
+      <select id="sqm_q3p"></select>
+      <input id="sqm_a3" placeholder="Answer 3"/>
+    </div>
+    <div id="sqm_msg" style="color:#ffd1d1;min-height:20px;"></div>
+    <div class="footer">
+      <button class="btn ghost" onclick="SecQM_close()">Cancel</button>
+      <button class="btn" onclick="SecQM_save()">Save</button>
+    </div>
+  </div>
+</div>
+<!-- Some Random thingy needed for Drive Import :D -->
+
+<input
+  type="file"
+  id="driveZipInput"
+  accept=".zip"
+  style="display:none"
+/>
+<!-- Another Random thingy needed for System Import :D -->
+
+<input
+  type="file"
+  id="systemImportInput"
+  accept=".jkb"
+  style="display:none"
+/>
+
+<script src="JackOSziplogic.js"></script>
+<script src="JackOS.js"></script>
+
+</body>
+</html>

@@ -14,4 +14,3 @@ I recommend reading all the Markdown (md) files before running JackOS so that yo
 
 Thank You For Choosing JackOS.
 
-

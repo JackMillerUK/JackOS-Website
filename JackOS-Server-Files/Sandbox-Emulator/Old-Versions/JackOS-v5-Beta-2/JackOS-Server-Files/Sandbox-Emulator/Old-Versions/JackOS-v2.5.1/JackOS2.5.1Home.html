@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JackOS Desktop</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Segoe UI, Arial, sans-serif;
+        background: url('Yo.png') no-repeat center center fixed;
+        background-size: cover;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .desktop {
+        position: relative;
+        width: 100%;
+        height: calc(100vh - 40px);
+        padding: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+    }
+
+    .icon {
+        width: 80px;
+        text-align: center;
+        margin: 10px;
+        color: white;
+        font-size: 14px;
+        cursor: default;
+    }
+
+    .icon-box {
+        width: 48px;
+        height: 48px;
+        background: rgba(255,255,255,0.3);
+        border-radius: 6px;
+        margin: 0 auto 5px;
+    }
+
+    .taskbar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 40px;
+        background: rgba(0,0,0,0.7);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 10px;
+        color: white;
+    }
+
+    .start-btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        background: rgba(255,255,255,0.2);
+        padding: 5px 10px;
+        border-radius: 4px;
+    }
+
+    .start-icon {
+        width: 20px;
+        height: 20px;
+        background: white;
+        border-radius: 3px;
+    }
+
+    .taskbar-right {
+        font-size: 24px;
+        min-width: 80px;
+        text-align: right;
+        margin-right: 20px;
+    }
+
+    .start-menu {
+        position: fixed;
+        bottom: 40px;
+        left: 10px;
+        width: 300px;
+        background: rgba(30,30,30,0.95);
+        color: white;
+        border-radius: 6px;
+        display: none;
+        flex-direction: column;
+        padding: 10px;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.3s ease;
+    }
+
+    .start-menu.show {
+        display: flex;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .menu-section {
+        margin-bottom: 10px;
+    }
+
+    .menu-section h3 {
+        margin: 5px 0;
+        font-size: 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+        padding-bottom: 5px;
+    }
+
+    .menu-item {
+        padding: 8px;
+        cursor: pointer;
+        border-radius: 4px;
+        text-align: center;
+    }
+
+    .menu-item:hover {
+        background: rgba(255,255,255,0.2);
+    }
+
+    .power-options {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 10px;
+    }
+
+    .account-icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        margin: 10px auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: black;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 32px;
+        display: none;
+        z-index: 999;
+    }
+</style>
+</head>
+<body>
+<div class="desktop">
+    <div class="icon"><div class="icon-box"></div><div>Documents</div></div>
+    <div class="icon"><div class="icon-box"></div><div>Browser</div></div>
+    <div class="icon"><div class="icon-box"></div><div>Settings</div></div>
+    <!-- Photos Icon -->
+<div class="icon" onclick="openPhotosApp()">
+
+    <div>Photos</div>
+</div>
+
+<!-- Photos App Modal -->
+<div id="photosApp" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,255,255,0.9);padding:20px;border-radius:8px;width:400px;height:300px;overflow:auto;">
+    <h2>Photos</h2>
+    <div>
+        yo.png<br>
+        <button onclick="setWallpaper('Yo.png')">Set as Wallpaper</button>
+    </div>
+    <div>
+        yo2.png<br>
+        <button onclick="setWallpaper('Yo2.png')">Set as Wallpaper</button>
+    </div>
+    <button onclick="closePhotosApp()" style="margin-top:10px;">Close</button>
+</div>
+
+</div>
+
+<div class="taskbar">
+    <div class="start-btn" onclick="toggleStartMenu()">
+        <div class="start-icon"></div>
+        <span>Start</span>
+    </div>
+    <div class="taskbar-right" id="clock"></div>
+</div>
+
+<div class="start-menu" id="startMenu">
+    <div class="account-icon" onclick="logout()">👤</div>
+    <div class="menu-section">
+        <h3>All Programs</h3>
+        <div class="menu-item">Program 1</div>
+        <div class="menu-item">Program 2</div>
+        <div class="menu-item">Program 3</div>
+    </div>
+    <div class="menu-section">
+        <h3>Power</h3>
+        <div class="power-options">
+            <div class="menu-item" onclick="shutdown()">Shut Down</div>
+            <div class="menu-item" onclick="restart()">Restart</div>
+            <div class="menu-item" onclick="sleep()">Sleep</div>
+            <div class="menu-item" onclick="lock()">Lock</div>
+        </div>
+    </div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+
+<script>
+function updateClock() {
+    const clock = document.getElementById('clock');
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    clock.textContent = `${hours}:${minutes}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+function toggleStartMenu() {
+    const menu = document.getElementById('startMenu');
+    menu.classList.toggle('show');
+}
+
+function logout() {
+    window.location.href = "JackOS2.5.1Login.html";
+}
+
+function showOverlay(text, callback) {
+    const overlay = document.getElementById('overlay');
+    overlay.textContent = text;
+    overlay.style.display = 'flex';
+    setTimeout(() => {
+        overlay.style.display = 'none';
+        if (callback) callback();
+    }, 3000);
+}
+
+function shutdown() {
+    // Step 1: Show overlay with two lines
+    const overlay = document.getElementById('overlay');
+    overlay.innerHTML = "Shutting Down...<br>Click anywhere to power on";
+    overlay.style.display = 'flex';
+
+    // Step 2: After 3 seconds, show black screen with power image in center
+    setTimeout(() => {
+        document.body.innerHTML = `
+            <div style="width:100%;height:100vh;background:black;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+                power.png
+            </div>
+        `;
+        // Step 3: Clicking anywhere redirects to startup page
+        document.body.onclick = () => {
+            window.location.href = "JackOS2.5.1startup2.html";
+        };
+    }, 3000);
+}
+
+
+
+function restart() {
+    showOverlay("Restarting...", () => {
+        window.location.href = "JackOS2.5.1startup2.html";
+    });
+}
+ 
+function sleep() {
+    // Fade out the entire body
+    document.body.style.transition = "opacity 2s ease";
+    document.body.style.opacity = "0";
+
+    // After fade-out, show black screen and click-to-wake
+    setTimeout(() => {
+        document.body.innerHTML = `
+            <div style="width:100%;height:100vh;background:black;cursor:pointer;"></div>
+        `;
+        document.body.style.opacity = "1"; // Reset opacity for new content
+        document.body.onclick = () => {
+            window.location.href = "JackOS2.5.1Login.html";
+        };
+    }, 2000); // Wait for fade-out to finish
+}
+
+
+
+
+function lock() {
+    window.location.href = "JackOS2.5.1Login.html";
+}
+// Apply saved wallpaper on load
+document.addEventListener("DOMContentLoaded", () => {
+    const savedWallpaper = localStorage.getItem("jackosWallpaper");
+    if (savedWallpaper) {
+        document.body.style.background = `url('${savedWallpaper}') no-repeat center center fixed`;
+        document.body.style.backgroundSize = "cover";
+    }
+});
+
+function openPhotosApp() {
+    document.getElementById("photosApp").style.display = "block";
+}
+
+function closePhotosApp() {
+    document.getElementById("photosApp").style.display = "none";
+}
+
+function setWallpaper(image) {
+    // Change wallpaper
+    document.body.style.background = `url('${image}') no-repeat center center fixed`;
+    document.body.style.backgroundSize = "cover";
+
+    // Save wallpaper in localStorage
+    localStorage.setItem("jackosWallpaper", image);
+
+    // Also update login page wallpaper (if same domain)
+    // This works if both pages share localStorage
+}
+
+</script>
+</body>
+</html>

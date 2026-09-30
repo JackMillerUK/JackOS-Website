@@ -1,0 +1,61 @@
+{
+  "versions": [
+    {
+      "version": "JackOS v4.2.1",
+      "description": "JackOS v4.2.1 comes with small updates things like now changing security questions require admin authentication. This update also comes with minor bug fixes to improve security.",
+      "releaseDate": "15th May 2026",
+      "safe": true,
+      "pathway": "Old-Versions/JackOS-v4.2.1/JackOS.html"
+    },
+    {
+      "version": "JackOS v4.2",
+      "description": "Introduced manual backup and restore. To backup system data (wallpaper, accounts, passwords and the version number), go to Settings, Data, System. You now have the choice to Export or Import. Export means requires the administrator’s Username and Password. To make sure no one can steal your data once Exported, you are asked to create a backup password. This password is saved to the jkb file so when you import it, it requires administrator Username and Password and the saved backup password. To Import system data, click Import, put in administrator Username and Password, choose the jkb file and then put in the backup password. You will then be able to recover JackOS data. Trouble shooting: If when importing, you get an error saying something about the versions not matching, the said jkb file version needs to be ran to import. JackOS v4.2 or later is required to backup. To backup photos, you can go to Settings, Data, Photos. You can then export or import photos (Both requiring administrator Username and Password). To back up your JackOSDrive, go to Settings, Data, JackOSDrive. You can then export everything in JackOSDrive as a zip archive or import a zip archive with all contents saving to drive (not overwriting). Both actions require administrator Username and Password.",
+      "releaseDate": "9th May 2026",
+      "safe": true,
+      "pathway": "Old-Versions/JackOS-v4.2/JackOS.html"
+    },
+    {
+      "version": "JackOS v4.1.1",
+      "description": "Major bug fixes for browser, photos, JCAM and broken UI. Also renamed system files.",
+      "releaseDate": "7th May 2026",
+      "safe": true,
+      "pathway": "Old-Versions/JackOS-v4.1.1/JackOS.html"
+    },
+    {
+      "version": "JackOS v4.1",
+      "description": "This update releases the fix for JCAM, whilst the UI is still being worked on and will be released in the next update, this update fixes the broken application.",
+      "releaseDate": "7th May 2026",
+      "safe": true,
+      "pathway": "Old-Versions/JackOS-v4.1/index.html"
+    },
+    {
+      "version": "JackOS v4.0",
+      "description": "Major security fixes including admin authentication required in most major tasks and more importantly the fixed security questions.",
+      "releaseDate": "30th April 2026",
+      "safe": true,
+      "pathway": "Old-Versions/JackOS-v4.0/index.html"
+    },
+
+{
+      "version": "JackOS v3.2",
+      "description": "JackOS v3.2",
+      "releaseDate": "UNKNOWN",
+      "safe": true,
+      "pathway": "Old-Versions/JackOS-v3.2/index.html"
+    },
+    {
+      "version": "JackOS v3.1.8",
+      "description": "The Major UI Update.",
+      "releaseDate": "UNKNOWN", 
+      "safe": true,
+      "pathway": "Old-Versions/JackOS-v3.1.8/index.html"
+    },
+    {
+      "version": "JackOS v2.5.1",
+      "description": "The First Publicly Released JackOS Version.",
+      "releaseDate": "UNKNOWN",
+      "safe": true,
+      "pathway": "Old-Versions/JackOS-v2.5.1/JackOS2.5.1startup2.html"
+    }
+  ]
+}
