@@ -1,1000 +1,388 @@
-<!-- JackOS v5 Beta -->
-
-<!-- Core HTML code for JackOS. Currently InDev v5 Beta 3 -->
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
-<title>JackOS v5 Beta 3</title>
-<link rel="icon" type="image/png" href="JackOS-Logo.png">
-<link rel="stylesheet" href="JackOS.css">
-</head>
-<body>.
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<section id="startup" class="screen active">
+<title>JackOS</title>
 
-  <div id="main-text" class="fade-text">🐵<br>JackOS<br>v5 Beta 3</div>
+<scriptSystem-Files/JackOS.jsscript>
 
+<style>
+:root{
+    --bg:#0f172a;
+    --bg2:#1e293b;
+    --primary:#3b82f6;
+    --accent:#06b6d4;
+    --text:#ffffff;
+    --card:rgba(255,255,255,0.08);
+    --border:rgba(255,255,255,0.15);
+}
 
-  <div id="popup" class="popup" style="display:none;">
-    <p>ACTIVATION ERROR! <br><br>This software has not been activated.</p>
-    <p>Please put in your product activation key below to successfully activate this software:</p>
-    <input type="text" id="activation-key" placeholder="Enter activation key">
-    <button onclick="Startup_checkKey()">Activate</button>
-  </div>
-</section>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
 
-<!-- Setup -->
-<section id="setup" class="screen">
-  <div class="setup-card">
-    <div class="setup-header">
-      <div class="logo">🧩</div>
-      <div>
-        <h2>Welcome to JackOS Setup</h2>
-        <div style="opacity:.8; font-size:14px;">Add at least one account, then choose one or more admins.</div>
-      </div>
-    </div>
-    <div class="setup-row">
-      <input id="su-name" type="text" placeholder="Account name (e.g. Jack)" autocomplete="off"/>
-      <input id="su-pass" type="password" placeholder="Password" autocomplete="new-password"/>
-    </div>
-    <div class="setup-row single">
-      <input id="su-pass2" type="password" placeholder="Confirm password" autocomplete="new-password"/>
-    </div>
-    <div class="setup-actions">
-      <button class="btn" onclick="Setup_addUser()">Add account</button>
-      <button class="btn ghost" onclick="Setup_addGuest()">Add Guest account</button>
-      <button class="btn ghost" onclick="Setup_clearInputs()">Clear</button>
-      <div id="setupMsg" style="margin-left:auto; color:#cfe9ff; min-height:22px;"></div>
-    </div>
-    <div class="setup-list" id="setupList"></div>
-    <div class="setup-actions" style="justify-content:flex-end;">
-      <button class="btn ghost" onclick="show('login', true)">Back to Login</button>
-      <button class="btn" id="setupFinishBtn" onclick="Setup_finish()" disabled>Finish & Continue</button>
-    </div>
-  </div>
-</section>
+html{
+    scroll-behavior:smooth;
+}
 
-<!-- Login -->
-<section id="login" class="screen">
-  <div class="login-container">
-    <div class="profile-circle">👤</div>
-    <div id="current-user">--</div>
-    <input type="password" id="password" placeholder="Password" autocomplete="current-password" />
-    <button id="loginBtn" onclick="Login_login()">Login</button>
-      <button id="guestLoginBtn" class="btn ghost" style="display:none;" onclick="Login_guest()">Sign in as Guest</button>
-      <button id="secqForgotBtn" class="btn ghost" style="margin-top:8px;" onclick="SecQ_openRecovery()">Forgot password?</button>
-    <div class="user-switch" id="userSwitch"></div>
-    <p id="message"></p>
-  </div>
-</section>
+body{
+    background:
+    radial-gradient(circle at top left,#1e3a8a,transparent 35%),
+    radial-gradient(circle at bottom right,#0891b2,transparent 35%),
+    var(--bg);
+    color:var(--text);
+}
 
-<!-- Transition -->
-<section id="transition" class="screen">
-  <div class="trans-card">
-    <div class="trans-title" id="transTitle">Welcome</div>
-    <div class="trans-sub">Preparing your desktop…</div>
-    <div class="spinner" aria-label="Loading"></div>
-  </div>
-</section>
-
-<!-- Desktop / Home -->
-<section id="desktop" class="screen">
-  <div class="desktop">
-
-    <!-- Desktop icons for all apps -->
-    <div class="icon" data-app="explorer">
-      <div class="icon-box" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M3 7h6l2 2h10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" fill="#ffcc66"/><path d="M21 9H3" stroke="#b3832e" stroke-width="1.2"/></svg>
-      </div><div>Explorer</div>
-    </div>
-
-    <div class="icon" data-app="browser">
-      <div class="icon-box" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#9dd0ff" stroke-width="1.4"/><path d="M3 12h18M12 3c2.5 3 2.5 15 0 18M7 5.5c1.6 1.2 2.9 3.6 3 6.5-.1 2.9-1.4 5.3-3 6.5M17 5.5c-1.6 1.2-2.9 3.6-3 6.5.1 2.9 1.4 5.3 3 6.5" stroke="#9dd0ff" stroke-width="1"/></svg>
-      </div><div>Browser</div>
-    </div>
-
-    <div class="icon" data-app="photos">
-      <div class="icon-box" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" ry="2" stroke="#77e0a0" stroke-width="1.4"/><circle cx="16.5" cy="9" r="2" fill="#77e0a0"/><path d="M5 17l4.5-5 3.5 4 2-2L19 17H5z" fill="#77e0a0" opacity=".8"/></svg>
-      </div><div>Photos</div>
-    </div>
-
-    <div class="icon" data-app="camera">
-      <div class="icon-box" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2" ry="2" stroke="#ffd66b" stroke-width="1.4"/><rect x="7" y="4" width="5" height="3" rx="1" fill="#ffd66b"/><circle cx="12" cy="12.5" r="4" stroke="#ffd66b" stroke-width="1.4"/><circle cx="12" cy="12.5" r="2.2" fill="#ffd66b" opacity="0.8"/></svg>
-      </div><div>Camera</div>
-    </div>
-
-    <div class="icon" data-app="calculator">
-      <div class="icon-box" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2" ry="2" stroke="#ffd66b" stroke-width="1.4"/><rect x="6" y="5" width="12" height="4" fill="#ffd66b" opacity="0.7"/><rect x="6" y="11" width="4" height="3.5" fill="#9dd0ff"/><rect x="10" y="11" width="4" height="3.5" fill="#9dd0ff"/><rect x="14" y="11" width="4" height="3.5" fill="#9dd0ff"/><rect x="6" y="15.5" width="4" height="3.5" fill="#9dd0ff"/><rect x="10" y="15.5" width="4" height="3.5" fill="#9dd0ff"/><rect x="14" y="15.5" width="4" height="3.5" fill="#1e8e3e"/></svg>
-      </div><div>Calculator</div>
-    </div>
-
-    <div class="icon" data-app="settings">
-      <div class="icon-box" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="3" stroke="#ffd66b" stroke-width="1.4"/>
-          <path d="M12 3v2M12 19v2M3 12h2M19 12h2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M5 19l1.4-1.4" stroke="#ffd66b" stroke-width="1.2"/>
-        </svg>
-      </div><div>Settings</div>
-    </div>
-
-    <div class="icon" data-app="music">
-      <div class="icon-box" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M9 18V5l11-2v13" stroke="#ff8fbe" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="18" r="3" fill="#ff8fbe"/><circle cx="17" cy="16" r="3" fill="#ff8fbe"/></svg>
-      </div><div>Music</div>
-    </div>
-
-    <div class="icon" data-app="games">
-      <div class="icon-box" aria-hidden="true" style="font-size:28px;">🎮</div>
-      <div>Games</div>
-    </div>
-
-    <div class="icon" data-app="appstore">
-      <div class="icon-box" aria-hidden="true" style="font-size:28px;">🛒</div>
-      <div>App Store</div>
-    </div>
-
-    <!-- Photos app window -->
-    <div id="musicApp">
-      <div id="musicHeader"><div class="title">Music</div><div class="actions"></div></div>
-      <div id="musicNotice" role="status"></div>
-      <div id="musicTabs" role="tablist"><button class="explorer-btn music-tab active" data-music-mode="home">Home</button><button class="explorer-btn ghost music-tab" data-music-mode="library">Library</button></div>
-      <label class="explorer-btn music-import" for="musicInput">Import Music</label>
-      <input id="musicInput" type="file" accept="audio/mpeg,audio/wav,audio/mp4,audio/aac,audio/flac,.mp3,.wav,.m4a,.aac,.flac" multiple style="display:none;" />
-      <div id="musicBody"><div id="musicList" aria-live="polite"></div></div>
-      <div id="musicPlayer" class="music-player" aria-label="Music player">
-        <img id="musicPlayerArtwork" alt="Album artwork" />
-        <div class="music-player-info"><strong id="musicPlayerTitle">Nothing playing</strong><span id="musicPlayerArtist">Select a song</span></div>
-        <div class="music-player-controls"><button class="explorer-btn ghost" id="musicPrevious" title="Previous">⏮</button><button class="explorer-btn" id="musicPlayPause" title="Play or pause">▶</button><button class="explorer-btn ghost" id="musicNext" title="Next">⏭</button><input id="musicVolume" type="range" min="0" max="1" step="0.01" value="0.8" aria-label="Volume" /></div>
-        <input id="musicProgress" type="range" min="0" max="100" value="0" step="0.1" aria-label="Progress" />
-        <audio id="musicAudio" preload="metadata"></audio>
-      </div>
-    </div>
-
-    <div id="gamesApp" class="game-window games-launcher">
-      <div class="game-header">
-        <div class="title">Games</div>
-        <div class="actions"></div>
-      </div>
-      <div class="game-content">
-        <p class="games-intro">Installed games</p>
-        <div id="gamesList"></div>
-      </div>
-    </div>
-
-    <div id="appStoreApp" class="app-window">
-      <div class="app-window-header">
-        <div class="title">App Store</div>
-        <div class="actions">
-          <label id="appStoreImportLabel" class="explorer-btn" for="appStoreImportInput" style="display:none;">Import App</label>
-          <input id="appStoreImportInput" type="file" accept=".zip,application/zip" style="display:none;">
-          <button class="explorer-btn ghost" onclick="AppStore_showStore()">Home</button>
-          <button class="explorer-btn ghost" onclick="AppStore_showSettings()">Installed Apps</button>
-           <button
-  class="explorer-btn ghost"
-  onclick="AppStore_showCategory('games')"
->
-Games
-</button>
-
-<button
-  class="explorer-btn ghost"
-  onclick="AppStore_showCategory('productivity')"
->
-Productivity
-</button>
-
-<button
-  class="explorer-btn ghost"
-  onclick="AppStore_showCategory('utilities')"
->
-Utilities
-</button>
-
-<button
-  class="explorer-btn ghost"
-  onclick="AppStore_showCategory('media')"
->
-Media
-</button>
-
-        </div>
-      </div>
-      <div id="appStoreBody" class="app-store-body"></div>
-    </div>
-
-    <div id="flappyApp" class="game-window">
-      <div class="game-header">
-        <div class="title">Flappy Bird</div>
-        <div class="actions"></div>
-      </div>
-      <div class="game-content">
-        <canvas id="flappyCanvas" width="360" height="500" aria-label="Flappy Bird game"></canvas>
-        <div class="game-toolbar">
-          <button class="explorer-btn" onclick="Flappy_jump()">Jump</button>
-          <button class="explorer-btn ghost" onclick="Flappy_reset()">Restart</button>
-          <div id="flappyScore" class="score-pill">Score: 0</div>
-        </div>
-        <div class="game-help">Guide the bird through the pipes. Use Jump, Space, W, or Arrow Up.</div>
-      </div>
-    </div>
-
-    <div id="tetrisApp" class="game-window">
-      <div class="game-header">
-        <div class="title">Tetris</div>
-        <div class="actions"></div>
-      </div>
-      <div class="game-content">
-        <canvas id="tetrisCanvas" width="300" height="600" aria-label="Tetris game"></canvas>
-        <div class="game-toolbar">
-          <button class="explorer-btn" onclick="Tetris_restart()">Restart</button>
-          <div id="tetrisScore" class="score-pill">Score: 0</div>
-        </div>
-      </div>
-    </div>
-
-    <div id="snakeApp" class="game-window">
-      <div class="game-header">
-        <div class="title">Snake</div>
-        <div class="actions"></div>
-      </div>
-      <div class="game-content">
-        <canvas id="snakeCanvas" width="360" height="360" aria-label="Snake game"></canvas>
-        <div class="game-toolbar">
-          <button class="explorer-btn" onclick="Snake_restart()">Restart</button>
-          <div id="snakeScore" class="score-pill">Score: 0</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Photos app window -->
-    <div id="photosApp">
-      <div id="photosHeader"><h2>Photos</h2>
-        <div class="actions">
-          <label class="explorer-btn" for="photosInput">Import Photos</label>
-          <input id="photosInput" type="file" accept="image/*" multiple style="display:none;" />
-          <button class="explorer-btn ghost" id="photosSelectBtn" onclick="Photos_toggleSelect()">Select</button>
-          <button class="explorer-btn ghost" id="photosSelectAllBtn" onclick="Photos_selectAll()" style="display:none;">Select all</button>
-          <button class="explorer-btn danger" id="photosDeleteBtn" onclick="Photos_deleteSelected()" style="display:none;">Delete selected</button>
-          
-        </div>
-      </div>
-      <div id="photosBody"></div>
-    </div>
-
-    <!-- Explorer window -->
-    <div id="explorer">
-      <div class="header">
-
-  <div class="title">
-    Explorer
-  </div>
-
-  <div style="display:flex; align-items:center; gap:8px;">
-
-    <div class="controls">
-          <label
-  class="explorer-btn ghost"
-  for="importInput"
->
-  ↑ Import
-</label>
-          <input id="importInput" type="file" multiple style="display:none;" />
-         
-          <button
-  class="explorer-btn ghost"
-  onclick="Explorer_createFile()"
->
-  📄 New File
-</button>
-          <button
-  class="explorer-btn ghost"
-  onclick="Explorer_createFolder()"
->
-  📁 New Folder
-</button>
-         <button
-  class="explorer-btn ghost"
-  id="multiToggle"
-  onclick="Explorer_toggleMulti()"
->
-  ✓ Select
-</button>
-              </div>
-
-    <button
-  class="explorer-btn ghost"
-  onclick="Explorer_close()"
->
-  ✕
-</button>
-    
-
-  </div>
-        
-      </div>
-      <div class="crumbs" id="explorer-breadcrumb"></div>
-      
-<div id="multiBar">
-
-  <div id="multiCount">
-    0 selected
-  </div>
-
-  <button
-    class="explorer-btn ghost"
-    onclick="Explorer_clearMulti()"
-  >
-    Clear
-  </button>
-
-</div>
-
-      
-<div class="body">
-
-  <aside id="explorerSidebar">
-
-    <button
-  class="explorer-side-btn"
-  onclick="Explorer_showHome()"
->
-  🏠 Home
-</button>
-
-<button
-  class="explorer-side-btn"
-  onclick="Explorer_openJackOSDrive()"
->
-  📁 JackOS Drive
-</button>
-
-<button
-  class="explorer-side-btn"
-  onclick="alert('JackOS Cloud coming soon')"
->
-  ☁ JackOS Cloud
-</button>
-
-<button
-  class="explorer-side-btn"
-  onclick="alert('Network coming soon')"
->
-  🛜 Network
-</button>
-
-<button
-  class="explorer-side-btn"
-  onclick="alert('External Drives coming soon')"
->
-  💾 External Drives
-</button>
-
-
-
-<button
-  class="explorer-side-btn"
-  onclick="alert('Recents coming soon')"
->
-  🕒 Recents
-</button>
-
-<button
-  class="explorer-side-btn"
-  onclick="alert('Favourites coming soon')"
->
-  ⭐ Favourites
-</button>
-
-<button
-  class="explorer-side-btn"
-  onclick="alert('Tags coming soon')"
->
-  🏷 Tags
-</button>
-
-<button
-  class="explorer-side-btn"
-  onclick="Explorer_openRecycleBin()"
->
-  🗑 Recycle Bin
-</button>
-  </aside>
-
-  <div class="pane list">
-    <ul id="explorer-list"></ul>
-  </div>
-
-  <div class="pane preview">
-
-    <div
-      id="explorer-info"
-      style="
-        margin-bottom:6px;
-        font-size:13px;
-        color:#bbb;
-      "
-    ></div>
-
-    <pre
-      id="explorer-preview"
-      style="display:none;"
-    ></pre>
-
-    <textarea
-      id="explorer-editor"
-      style="display:none;"
-    ></textarea>
-
-    <div
-      class="footer"
-      style="
-        margin-top:8px;
-        display:flex;
-        gap:8px;
-      "
-    >
-
-      <button
-        class="explorer-btn"
-        id="set-wallpaper-btn"
-        style="display:none;"
-        onclick="
-          Explorer_setWallpaperSelected()
-        "
-      >
-        Set as background
-      </button>
-
-      <button
-        class="explorer-btn ghost"
-        onclick="
-          Explorer_clearPreview()
-        "
-      >
-        Clear
-      </button>
-
-      <button
-        class="explorer-btn"
-        id="save-btn"
-        style="display:none;"
-        onclick="Explorer_save()"
-      >
-        Save (FS Access)
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-<div
-  id="explorerContextMenu"
-  style="
-    display:none;
+nav{
     position:fixed;
-    z-index:10000;
-  "
-></div>
-      <div id="destDialog" style="position:absolute; inset:0; display:none; align-items:center; justify-content:center; z-index:70;">
-        <div class="shade" onclick="Explorer_closeDest()" style="position:absolute; inset:0; background:rgba(0,0,0,0.6);"></div>
-        <div class="panel" style="position:relative; width:min(560px, 92%); background:#222; border:1px solid #444; border-radius:10px; padding:12px; color:#fff; z-index:71;">
-          <h3 id="destTitle" style="margin:0 0 8px 0;">Choose destination</h3>
-          <div id="destCrumbs" style="font-size:12px; color:#bbb; margin:6px 0;"></div>
-          <div id="destList" style="background:#111; border:1px solid #333; border-radius:8px; padding:8px; height:220px; overflow:auto;"></div>
-          <div id="destNameWrap" style="display:none; gap:6px; align-items:center; margin-top:8px;">
-            <label for="destName">Name:</label>
-            <input id="destName" type="text" placeholder="file name" style="width:100%; padding:8px; border-radius:6px; border:1px solid #555; background:#111; color:#fff;"/>
-          </div>
-          <div id="destFooter" style="margin-top:8px; display:flex; gap:8px; align-items:center; justify-content:flex-end;">
-            <button class="explorer-btn ghost" onclick="Explorer_destNewFolder()">New Folder</button>
-            <button class="explorer-btn" onclick="Explorer_confirmDest()">Select</button>
-            <button class="explorer-btn ghost" onclick="Explorer_closeDest()">Cancel</button>
-          </div>
+    top:0;
+    width:100%;
+    backdrop-filter:blur(20px);
+    background:rgba(15,23,42,.75);
+    border-bottom:1px solid var(--border);
+    z-index:1000;
+}
+
+.nav-container{
+    max-width:1200px;
+    margin:auto;
+    padding:1rem;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:1.4rem;
+    font-weight:700;
+    color:var(--accent);
+}
+
+.nav-links{
+    display:flex;
+    gap:1rem;
+}
+
+.nav-links a{
+    color:white;
+    text-decoration:none;
+    transition:.3s;
+}
+
+.nav-links a:hover{
+    color:var(--accent);
+}
+
+section{
+    min-height:100vh;
+    padding:120px 40px 80px;
+    max-width:1200px;
+    margin:auto;
+}
+
+.hero{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+
+.hero h1{
+    font-size:4rem;
+    margin-bottom:1rem;
+}
+
+.hero p{
+    max-width:700px;
+    font-size:1.15rem;
+    opacity:.9;
+}
+
+.version{
+    margin-top:20px;
+    color:var(--accent);
+    font-weight:bold;
+}
+
+.button{
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    border:none;
+    color:white;
+    padding:14px 28px;
+    border-radius:12px;
+    cursor:pointer;
+    margin:10px;
+    font-size:1rem;
+    transition:.3s;
+}
+
+.button:hover{
+    transform:translateY(-3px);
+}
+
+.section-title{
+    text-align:center;
+    font-size:2.3rem;
+    margin-bottom:40px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+}
+
+.card{
+    background:var(--card);
+    border:1px solid var(--border);
+    backdrop-filter:blur(15px);
+    border-radius:20px;
+    padding:25px;
+}
+
+.card h3{
+    margin-bottom:15px;
+    color:var(--accent);
+}
+
+.feature-list{
+    list-style:none;
+}
+
+.feature-list li{
+    margin:8px 0;
+}
+
+.download-area{
+    text-align:center;
+}
+
+.footer{
+    text-align:center;
+    padding:25px;
+    border-top:1px solid var(--border);
+    opacity:.8;
+}
+
+@media(max-width:768px){
+
+.hero h1{
+    font-size:2.5rem;
+}
+
+.nav-links{
+    gap:.6rem;
+    font-size:.9rem;
+}
+}
+</style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-container">
+        <div class="logo">JackOS</div>
+
+        <div class="nav-links">
+            <a href="</a>
+            #featuresFeatures</a>
+            #editionsEditions</a>
+            #downloadDownload / Launch</a>
         </div>
-      </div>
+    </div>
+</nav>
+
+<section id="home" class="hero">
+
+    <h1>Welcome to JackOS</h1>
+
+    <p>
+        A modern operating system designed for home users,
+        professionals, organisations and development teams.
+        Flexible editions, cloud capabilities and advanced tooling
+        all come together in one streamlined platform.
+    </p>
+
+    <div class="version" id="homeVersion">
+        JackOS vLoading...
     </div>
 
-    <!-- Browser window -->
-    <div id="browserWin">
-      <div id="browserBar">
-        <button id="browserBack" title="Back">⟵</button>
-        <button id="browserFwd" title="Forward">⟶</button>
-        <button id="browserRefresh" title="Refresh">⟳</button>
-        <input id="browserUrl" placeholder="Enter URL" value="purplemash.com" />
-      </div>
-      <div id="browserArea">
-        <iframe id="browserFrame" sandbox="allow-forms allow-scripts allow-popups allow-same-origin allow-top-navigation-by-user-activation" referrerpolicy="no-referrer"></iframe>
-        <div id="browserFallback">
-          <div>Some sites block being shown inside apps for security (X-Frame-Options/COEP). If the page looks empty, tap <b>Open in new tab</b>.</div>
-          <button id="browserOpenExt2">Open current page in new tab</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Calculator window -->
-    <div id="calcApp">
-      <div id="calcHeader">
-        <div class="title">Calculator</div>
-        <div class="actions"></div>
-      </div>
-      <div id="calcBody">
-        <div id="calcDisplay">0</div>
-        <div id="calcGrid">
-          <button class="calc-btn fn" data-key="C">C</button>
-          <button class="calc-btn fn" data-key="back">⌫</button>
-          <button class="calc-btn fn" data-key="±">±</button>
-          <button class="calc-btn op" data-key="÷">÷</button>
-          <button class="calc-btn" data-key="7">7</button>
-          <button class="calc-btn" data-key="8">8</button>
-          <button class="calc-btn" data-key="9">9</button>
-          <button class="calc-btn op" data-key="×">×</button>
-          <button class="calc-btn" data-key="4">4</button>
-          <button class="calc-btn" data-key="5">5</button>
-          <button class="calc-btn" data-key="6">6</button>
-          <button class="calc-btn op" data-key="-">−</button>
-          <button class="calc-btn" data-key="1">1</button>
-          <button class="calc-btn" data-key="2">2</button>
-          <button class="calc-btn" data-key="3">3</button>
-          <button class="calc-btn" data-key="+">+</button>
-          <button class="calc-btn fn" data-key="%">%</button>
-          <button class="calc-btn" data-key="0">0</button>
-          <button class="calc-btn" data-key=".">.</button>
-          <button class="calc-btn eq" data-key="=">=</button>
-        </div>
-      </div>
-    </div>
-
-<!-- JCam window -->
-    <div id="jcamApp">
-      <div id="jcamHeader">
-        <div class="title">Camera</div>
-        <div class="actions">
-          <button id="jcamFlipBtn" onclick="JCam_flip()">Flip</button>
-          <button id="jcamSaveBtn" onclick="JCam_save()" style="display:none;">Save</button>
-          <button id="jcamRetakeBtn" onclick="JCam_retake()" style="display:none;">Retake</button>
-          
-        </div>
-      </div>
-      <div id="jcamBody">
-        <div class="jcam-top">
-          <video id="jcamVideo" playsinline muted></video>
-          <canvas id="jcamCanvas" style="display:none;"></canvas>
-          <div class="jcam-overlay">
-            <button class="jcam-btn" onclick="JCam_flip()">Flip</button>
-            <button class="jcam-btn shutter" id="jcamShutterBtn" onclick="JCam_shoot()"></button>
-          </div>
-        </div>
-        <div id="jcamStatus">Ready</div>
-      </div>
-    </div>
-
-    <!-- Settings window -->
-<div id="settingsWin">
-  <div id="settingsHeader">
-    <div class="title">Settings</div>
-    <div class="actions"></div>
-  </div>
-  <div id="settingsBody">
-    <!-- Main settings menu (default view) -->
-    <div class="set-panel" id="settingsMain">
-      <h3 style="margin-top:0;">Settings</h3>
-      <div class="set-actions" style="margin-top:6px;">
-  <button class="explorer-btn" onclick="Settings_showAccounts()">Accounts</button>
-  <button class="explorer-btn" onclick="Settings_showData()">Data</button>
-  <button class="explorer-btn" onclick="Settings_showApplications()">Applications</button>
-  <button class="explorer-btn" onclick="Settings_showTaskbar()">Taskbar</button>
-
-  <button
-  id="sandboxBtn"
-  class="explorer-btn"
-  onclick="Settings_showSandbox()"
-  style="display:none;"
->
-  Sandbox Emulator
-</button>
-
-
-</div>
-
-    </div>
-
-    <div class="set-panel" id="settingsApplicationsPanel" style="display:none;">
-      <h3 style="margin-top:0;">Applications</h3>
-      <div id="settingsApplicationsList"></div>
-      <div class="set-actions" style="margin-top:12px;">
-        <button class="explorer-btn ghost" onclick="Settings_backToMain()">Back</button>
-      </div>
-    </div>
-
-    <div class="set-panel" id="settingsTaskbarPanel" style="display:none;">
-      <h3 style="margin-top:0;">Taskbar</h3>
-      <label><input id="taskbarCompact" type="checkbox"> Compact taskbar</label>
-      <h4>Pin apps</h4>
-      <div id="taskbarPinList"></div>
-      <div class="set-actions" style="margin-top:12px;"><button class="explorer-btn" onclick="Settings_saveTaskbar()">Save</button><button class="explorer-btn ghost" onclick="Settings_backToMain()">Back</button></div>
-    </div>
-
-    <!-- Accounts panel (hidden until user clicks "Accounts") -->
-    <div class="set-panel" id="settingsAccountsPanel" style="display:none;">
-      <h3 style="margin-top:0;">Accounts</h3>
-      <div id="settingsAccList"></div>
-      <div class="set-actions" style="margin-top:10px;">
-        <button class="explorer-btn" onclick="Settings_addAccountUI()">Add Account</button>
-        <button class="explorer-btn ghost" onclick="Settings_backToMain()">Back</button>
-      </div>
-      <div style="margin-top:8px; font-size:12px; color:#bbb;">
-        Only <b>Admin</b> can add, remove, change passwords, or transfer admin. Non-admins will need to verify an admin account.
-      </div>
-    </div>
-<!-- Sandbox Emulator Run Panel -->
-
-
-
-
-
-
-
-<!-- Sandbox Emulator panel -->
-<div
-  class="set-panel"
-  id="settingsSandboxPanel"
-  style="display:none;"
->
-  <h3 style="margin-top:0;">
-    Sandbox Emulator
-  </h3>
-
-  <div
-    id="sandboxContent"
-  >
-    Loading...
-  </div>
-
-  <div
-    class="set-actions"
-    style="margin-top:12px;"
-  >
-    <button
-      class="explorer-btn ghost"
-      onclick="Settings_backToMain()"
-    >
-      Back
-    </button>
-  </div>
-</div>
-
-
-
-
-<!-- Data panel -->
-<div class="set-panel" id="settingsDataPanel" style="display:none;">
-  <h3 style="margin-top:0;">Data</h3>
-
-  <div class="set-actions" style="margin-top:6px;">
-    <button class="explorer-btn" onclick="Data_openSystem()">System</button>
-  </div>
-
-  <div style="margin-top:10px; font-size:12px; color:#bbb;">
-    Export or import complete account backups, including files, apps, music, photos, and game scores.
-  </div>
-
-<div id="dataActions" style="margin-top:12px;"></div>
-
-  <div class="set-actions" style="margin-top:12px;">
-    <button class="explorer-btn ghost" onclick="Settings_backToMain()">Back</button>
-  </div>
-</div>
-  </div>
-</div>
-
-    <!-- Admin Auth Dialog -->
-    <div id="adminAuthDialog" class="modal">
-      <div class="shade" onclick="Admin_cancel()"></div>
-      <div class="panel">
-        <h3>Admin authorisation required</h3>
-        <div class="row"><input id="adminAuthName" placeholder="Admin username"/><input id="adminAuthPass" type="password" placeholder="Admin password"/></div>
-        <div id="adminAuthMsg" style="color:#ffd1d1; min-height:20px;"></div>
-        <div class="footer">
-          <button class="btn ghost" onclick="Admin_cancel()">Cancel</button>
-          <button class="btn" onclick="Admin_verifyAndContinue()">Verify</button>
-        </div>
-      </div>
-    </div>
-<!-- Account Auth Dialog -->
-
-<div id="accountAuthDialog" class="modal">
-
-  <div
-    class="shade"
-    onclick="Account_cancel()"
-  ></div>
-
-  <div class="panel">
-
-    <h3>
-      Account verification required
-    </h3>
-
-    <div class="row">
-
-      <input
-        id="accountAuthName"
-        placeholder="Username"
-      />
-
-      <input
-        id="accountAuthPass"
-        type="password"
-        placeholder="Password"
-      />
-
-    </div>
-
-    <div
-      id="accountAuthMsg"
-      style="
-        color:#ffd1d1;
-        min-height:20px;
-      "
-    ></div>
-
-    <div class="footer">
-
-      <button
-        class="btn ghost"
-        onclick="Account_cancel()"
-      >
-        Cancel
-      </button>
-
-      <button
-        class="btn"
-        onclick="
-          Account_verifyAndContinue()
-        "
-      >
-        Verify
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-    <!-- Add / Change Pw / Remove dialogs -->
-    <div id="addAccDialog" class="modal"><div class="shade" onclick="AddAcc_cancel()"></div><div class="panel">
-      <h3>Add account</h3>
-      <div class="row"><input id="addAccName" placeholder="Account name"/><input id="addAccPass" type="password" placeholder="Password"/></div>
-      <div class="row single"><input id="addAccPass2" type="password" placeholder="Confirm password"/></div>
-      <div id="addAccMsg" style="color:#ffd1d1; min-height:20px;"></div>
-      <div class="footer"><button class="btn ghost" onclick="AddAcc_cancel()">Cancel</button><button class="btn" onclick="AddAcc_save()">Add</button></div>
-    </div></div>
-
-    <div id="chgPwDialog" class="modal"><div class="shade" onclick="ChgPw_cancel()"></div><div class="panel">
-      <h3>Change password</h3>
-      <div class="row single"><input id="chgPwUser" disabled /></div>
-      <div class="row"><input id="chgPw1" type="password" placeholder="New password"/><input id="chgPw2" type="password" placeholder="Confirm new password"/></div>
-      <div id="chgPwMsg" style="color:#ffd1d1; min-height:20px;"></div>
-      <div class="footer"><button class="btn ghost" onclick="ChgPw_cancel()">Cancel</button><button class="btn" onclick="ChgPw_save()">Save</button></div>
-    </div></div>
-
-    <div id="rmAccDialog" class="modal"><div class="shade" onclick="RmAcc_cancel()"></div><div class="panel">
-      <h3>Remove account</h3>
-      <div id="rmAccText" style="margin:6px 0 10px 0;"></div>
-      <div id="rmAccMsg" style="color:#ffd1d1; min-height:20px;"></div>
-      <div class="footer"><button class="btn ghost" onclick="RmAcc_cancel()">Cancel</button><button class="btn danger" onclick="RmAcc_do()">Remove</button></div>
-    </div></div>
-
-  </div>
-
-  <!-- Taskbar -->
-  <div class="taskbar">
-    <div class="start-btn" onclick="Desktop_toggleStartMenu()"><div class="start-icon"></div><span>Start</span></div>
-    <div class="taskbar-search"><input id="taskbarSearch" type="search" placeholder="Search apps" aria-label="Search apps"></div>
-    <div class="taskbar-search-results" id="taskbarSearchResults" role="listbox"></div>
-    <div class="taskbar-apps" id="taskbarApps"></div>
-    <div class="tray">
-      <div class="seg"><span id="taskbarUser">--</span></div>
-      <div class="seg"><span id="date">--</span></div>
-      <div class="seg"><span id="clock">--:--</span></div>
-    </div>
-  </div>
-
-<div id="taskbarTooltip"></div>
-
-  <!-- Start menu element -->
-  <div class="start-menu" id="startMenu">
-
-    <div class="menu-section">
-      <h3 style="margin:.25rem 0 .5rem 0;">All Programs</h3>
-      <div class="menu-item" data-app="explorer"><span class="mi-ico"><svg viewBox="0 0 24 24" fill="none"><path d="M3 7h6l2 2h10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" fill="#ffcc66"/><path d="M21 9H3" stroke="#b3832e" stroke-width="1.2"/></svg></span><span>Explorer</span></div>
-      <div class="menu-item" data-app="browser"><span class="mi-ico"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#9dd0ff" stroke-width="1.4"/><path d="M3 12h18M12 3c2.5 3 2.5 15 0 18M7 5.5c1.6 1.2 2.9 3.6 3 6.5-.1 2.9-1.4 5.3-3 6.5M17 5.5c-1.6 1.2-2.9 3.6-3 6.5.1 2.9 1.4 5.3 3 6.5" stroke="#9dd0ff" stroke-width="1"/></svg></span><span>Browser</span></div>
-      <div class="menu-item" data-app="photos"><span class="mi-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" ry="2" stroke="#77e0a0" stroke-width="1.4"/><circle cx="16.5" cy="9" r="2" fill="#77e0a0"/><path d="M5 17l4.5-5 3.5 4 2-2L19 17H5z" fill="#77e0a0" opacity=".8"/></svg></span><span>Photos</span></div>
-      <div class="menu-item" data-app="camera"><span class="mi-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2" ry="2" stroke="#ffd66b" stroke-width="1.4"/><rect x="7" y="4" width="5" height="3" rx="1" fill="#ffd66b"/><circle cx="12" cy="12.5" r="4" stroke="#ffd66b" stroke-width="1.4"/><circle cx="12" cy="12.5" r="2.2" fill="#ffd66b" opacity="0.8"/></svg></span><span>Camera</span></div>
-      <div class="menu-item" data-app="calculator"><span class="mi-ico"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2" ry="2" stroke="#ffd66b" stroke-width="1.4"/><rect x="6" y="5" width="12" height="4" fill="#ffd66b" opacity="0.7"/><rect x="6" y="11" width="4" height="3.5" fill="#9dd0ff"/><rect x="10" y="11" width="4" height="3.5" fill="#9dd0ff"/><rect x="14" y="11" width="4" height="3.5" fill="#9dd0ff"/><rect x="6" y="15.5" width="4" height="3.5" fill="#9dd0ff"/><rect x="10" y="15.5" width="4" height="3.5" fill="#9dd0ff"/><rect x="14" y="15.5" width="4" height="3.5" fill="#1e8e3e"/></svg></span><span>Calculator</span></div>
-      <div class="menu-item" data-app="settings"><span class="mi-ico"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="#ffd66b" stroke-width="1.4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M5 19l1.4-1.4" stroke="#ffd66b" stroke-width="1.2"/></svg></span><span>Settings</span></div>
-      <div class="menu-item" data-app="music"><span class="mi-ico"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18V5l11-2v13" stroke="#ff8fbe" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="18" r="3" fill="#ff8fbe"/><circle cx="17" cy="16" r="3" fill="#ff8fbe"/></svg></span><span>Music</span></div>
-      <div class="menu-item" data-app="games"><span class="mi-ico">🎮</span><span>Games</span></div>
-      <div class="menu-item" data-app="appstore"><span class="mi-ico">🛒</span><span>App Store</span></div>
-    </div>
-
-<div
-  class="menu-item"
-  id="serverTestBtn"
-  onclick="JackOS_TestConnection()"
-  style="display:none;"
->
-  🌐 Test Server Connection
-</div>
-
-    <div class="menu-section" style="margin-top:8px;">
-      <h3 style="margin:.25rem 0 .5rem 0;">Power</h3>
-      <div class="power-options" style="display:flex; gap:8px; flex-wrap:wrap; justify-content:space-around;">
-        <div class="menu-item" onclick="Desktop_lock()">Lock</div>
-        <div class="menu-item" onclick="Desktop_logout()">Log Out</div>
-        <div class="menu-item" onclick="Desktop_shutdown()">Shut Down</div>
-        <div class="menu-item" onclick="Desktop_restart()">Restart</div>
-        <div class="menu-item" onclick="Desktop_sleep()">Sleep</div>
-        <div class="menu-item" style="background:#6b1b1b;" onclick="Desktop_resetJackOS_guarded()">Reset JackOS</div>
-      </div>
-    </div>
-
-  </div>
 </section>
 
-<div id="fadeOverlay"></div>
-<div id="shutdownOverlay" style="display:none; position:fixed; inset:0; background:#000; z-index:1100; pointer-events:auto;"></div>
-<div id="sleepOverlay" style="display:none; position:fixed; inset:0; background:#000; z-index:1100; pointer-events:auto;"></div>
-<div id="overlay" style="position:fixed; inset:0; display:none; align-items:center; justify-content:center; font-size:28px; z-index:1000; background:rgba(0,0,0,1); text-align:center; line-height:1.4;"></div>
+<section id="features">
 
+    <h2 class="section-title">Features</h2>
 
+    <div class="grid">
 
-  <!-- Security Questions: Setup Wizard (3 of 15) -->
-  <div id="secqSetupDialog" class="modal" style="display:none;">
-    <div class="shade"></div>
-    <div class="panel">
-      <h3>Set up security questions</h3>
-      <div style="opacity:.85; margin-bottom:6px;">Pick <b>3</b> questions and enter your answers. You can edit these later in Settings.</div>
-      <div class="row single">
-        <select id="sqs_p1"></select>
-        <input id="sqs_a1" placeholder="Answer 1"/>
-      </div>
-      <div class="row single">
-        <select id="sqs_p2"></select>
-        <input id="sqs_a2" placeholder="Answer 2"/>
-      </div>
-      <div class="row single">
-        <select id="sqs_p3"></select>
-        <input id="sqs_a3" placeholder="Answer 3"/>
-      </div>
-      <div id="sqs_msg" style="color:#ffd1d1;min-height:20px;"></div>
-      <div class="footer">
-        
-        <button class="btn" onclick="SecQ_setupSave()">Save</button>
-      </div>
+        <div class="card">
+            <h3>Multi Edition System</h3>
+            <p>
+                Choose between Home, Private, Pro and Elite editions.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Cloud Integration</h3>
+            <p>
+                Sync devices, settings, wallpapers and backups.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>App Ecosystem</h3>
+            <p>
+                Support for App Store downloads and .jka applications.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Advanced Tools</h3>
+            <p>
+                Sandbox environments, server content and development tools.
+            </p>
+        </div>
+
     </div>
-  </div>
 
+</section>
 
-  <!-- Security Questions: Recovery Modal (Reset Password; 3 answers) -->
-  <div id="secqRecover" class="modal" style="display:none;">
-    <div class="shade" onclick="SecQ_closeRecovery()"></div>
-    <div class="panel">
-      <h3>Password recovery</h3>
-      <div class="row single"><select id="secqRecoverUser"></select></div>
-      <div id="secqRecoverQuestions" style="margin:6px 0 8px 0; opacity:.9;"></div>
-      <div class="row single"><input id="secqAns1" placeholder="Answer 1"/></div>
-      <div class="row single"><input id="secqAns2" placeholder="Answer 2"/></div>
-      <div class="row single"><input id="secqAns3" placeholder="Answer 3"/></div>
-      <div class="row"><input id="secqNew1" type="password" placeholder="New password"/><input id="secqNew2" type="password" placeholder="Confirm new password"/></div>
-      <div id="secqRecoverMsg" style="color:#ffd1d1; min-height:20px;"></div>
-      <div class="footer">
-        <button class="btn ghost" onclick="SecQ_closeRecovery()">Cancel</button>
-        <button class="btn" onclick="SecQ_tryRecover()">Reset password</button>
-      </div>
-    </div>
-  </div>
+<section id="editions">
 
+    <h2 class="section-title">JackOS Editions</h2>
 
-<!-- Security Questions: Manage (per-account) -->
-<div id="secqManageDialog" class="modal" style="display:none;">
-  <div class="shade" onclick="SecQM_close()"></div>
-  <div class="panel">
-    <h3>Security questions -- <span id="sqm_user"></span></h3>
-    <div style="opacity:.85; margin-bottom:6px;">Pick <b>3</b> questions and enter your answers for this account.</div>
-    <div class="row">
-      <select id="sqm_q1p"></select>
-      <input id="sqm_a1" placeholder="Answer 1"/>
+    <div class="grid">
+
+        <div class="card">
+            <h3>🏠 Home</h3>
+            <ul class="feature-list">
+                <li>✅ Explorer</li>
+                <li>✅ Photos</li>
+                <li>✅ Browser</li>
+                <li>✅ Calculator</li>
+                <li>✅ Camera</li>
+                <li>✅ Settings</li>
+                <li>✅ System Import/Export</li>
+                <li>✅ Security Questions</li>
+                <li>✅ Multi-user Accounts</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>🏢 Private</h3>
+            <ul class="feature-list">
+                <li>Everything in Home</li>
+                <li>✅ Cloud Sync</li>
+                <li>✅ Private Badge</li>
+                <li>✅ Extended Storage</li>
+                <li>✅ Wallpaper Sync</li>
+                <li>✅ App Store</li>
+                <li>✅ App Installation (.jka)</li>
+                <li>✅ Word Processor</li>
+                <li>✅ Music Streaming</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>💼 Pro</h3>
+            <ul class="feature-list">
+                <li>Everything in Private</li>
+                <li>✅ Sandbox Emulator</li>
+                <li>✅ Advanced Settings</li>
+                <li>✅ Server Libraries</li>
+                <li>✅ Early Access Features</li>
+                <li>✅ Pro Badge</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>👑 Elite</h3>
+            <ul class="feature-list">
+                <li>Everything in Pro</li>
+                <li>✅ JFE Access</li>
+                <li>✅ Beta Builds</li>
+                <li>✅ Development Tools</li>
+                <li>✅ Server Management</li>
+                <li>✅ Elite Activation</li>
+                <li>✅ Experimental Features</li>
+                <li>✅ Elite Badge</li>
+            </ul>
+        </div>
+
     </div>
-    <div class="row">
-      <select id="sqm_q2p"></select>
-      <input id="sqm_a2" placeholder="Answer 2"/>
+
+    <br><br>
+
+    <p style="text-align:center; opacity:.8;">
+        Note: Features may change over time.
+    </p>
+
+</section>
+
+<section id="download">
+
+    <h2 class="section-title">Download & Launch</h2>
+
+    <div class="download-area">
+
+        <h3 id="downloadVersion">
+            JackOS vLoading...
+        </h3>
+
+        <br>
+
+        <button class="button" onclick="comingSoon()">
+            Download Latest System Files
+        </button>
+
+        <button class="button" onclick="comingSoon()">
+            Launch Latest Version
+        </button>
+
     </div>
-    <div class="row">
-      <select id="sqm_q3p"></select>
-      <input id="sqm_a3" placeholder="Answer 3"/>
-    </div>
-    <div id="sqm_msg" style="color:#ffd1d1;min-height:20px;"></div>
-    <div class="footer">
-      <button class="btn ghost" onclick="SecQM_remove()">Remove</button>
-      <button class="btn ghost" onclick="SecQM_close()">Cancel</button>
-      <button class="btn" onclick="SecQM_save()">Save</button>
-    </div>
-  </div>
+
+</section>
+
+<div class="footer">
+    <span id="footerVersion">JackOS vLoading...</span>
 </div>
-<!-- Some Random thingy needed for Drive Import :D -->
 
-<input
-  type="file"
-  id="driveZipInput"
-  accept=".zip"
-  style="display:none"
-/>
-<!-- Another Random thingy needed for System Import :D -->
+<script>
+function comingSoon(){
+    alert("Coming Soon");
+}
 
-<input
-  type="file"
-  id="systemImportInput"
-  accept=".zip,application/zip"
-  style="display:none"
-/>
-<!-- Sandbox Emulator Window -->
-<div id="sandboxWindow">
+/*
+Supports:
+const JACKOS_VERSION = "1.4 beta";
+or
+window.JACKOS_VERSION = "1.4 beta";
+*/
 
-  <div id="sandboxHeader">
+let version = "Unknown";
 
-    <button
-      id="sandboxCloseBtn"
-      onclick="SE_close()"
-      title="Close Sandbox"
-    >❌</button>
+if(typeof JACKOS_VERSION !== "undefined"){
+    version = JACKOS_VERSION;
+}
+else if(typeof window.JACKOS_VERSION !== "undefined"){
+    version = window.JACKOS_VERSION;
+}
 
-  </div>
+document.getElementById("homeVersion").textContent =
+    `JackOS v${version}`;
 
-  <iframe
-    id="sandboxFrame"
-    src="about:blank"
-    sandbox="allow-scripts allow-forms allow-modals allow-popups allow-same-origin"
-  ></iframe>
+document.getElementById("downloadVersion").textContent =
+    `JackOS v${version}`;
 
-<div id="sandboxLoader">
-
-  <div class="spinner"></div>
-
-  <div id="sandboxLoaderText">
-    Launching...
-  </div>
-
-</div>
-
-</div>
-<script src="JackOSziplogic.js"></script>
-<script src="JackOS-WindowManager.js"></script>
-<script src="JackOS.js"></script>
-<script src="JackOS-Desktop.js"></script>
-<script src="JackOS-Settings.js"></script>
-<script src="JackOS-Photos.js"></script>
-<script src="JackOS-Explorer.js"></script>
-<script src="JackOS-Browser.js"></script>
-<script src="JackOS-Calculator.js"></script>
-<script src="JackOS-Games.js"></script>
-<script src="JackOS-Camera.js"></script>
-<script src="JackOS-Music.js"></script>
-<script src="JackOS-SecurityQuestions.js"></script>
-<script src="JackOS-Backup.js"></script>
-<script src="JackOS-Sandbox.js"></script>
+document.getElementById("footerVersion").textContent =
+    `JackOS v${version}`;
+</script>
 
 </body>
 </html>
