@@ -6,24 +6,24 @@
 
 <title>JackOS</title>
 
-<scriptSystem-Files/JackOS.jsscript>
+JackOS-System-Files/JackOS.jsscript>
 
 <style>
+
 :root{
-    --bg:#0f172a;
-    --bg2:#1e293b;
-    --primary:#3b82f6;
-    --accent:#06b6d4;
+    --bg:#050505;
+    --card:#101010;
+    --border:#1f1f1f;
     --text:#ffffff;
-    --card:rgba(255,255,255,0.08);
-    --border:rgba(255,255,255,0.15);
+    --blue:#3b82f6;
+    --purple:#8b5cf6;
 }
 
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:'Segoe UI',sans-serif;
+    font-family:Segoe UI,sans-serif;
 }
 
 html{
@@ -31,166 +31,251 @@ html{
 }
 
 body{
-    background:
-    radial-gradient(circle at top left,#1e3a8a,transparent 35%),
-    radial-gradient(circle at bottom right,#0891b2,transparent 35%),
-    var(--bg);
+    background:var(--bg);
     color:var(--text);
 }
+
+/* NAVBAR */
 
 nav{
     position:fixed;
     top:0;
     width:100%;
-    backdrop-filter:blur(20px);
-    background:rgba(15,23,42,.75);
+    background:rgba(5,5,5,.92);
+    backdrop-filter:blur(10px);
     border-bottom:1px solid var(--border);
     z-index:1000;
 }
 
-.nav-container{
-    max-width:1200px;
+.nav{
+    max-width:1400px;
     margin:auto;
-    padding:1rem;
     display:flex;
     justify-content:space-between;
     align-items:center;
+    padding:20px;
 }
 
 .logo{
-    font-size:1.4rem;
+    font-size:24px;
     font-weight:700;
-    color:var(--accent);
+    color:var(--blue);
 }
 
-.nav-links{
+.links{
     display:flex;
-    gap:1rem;
+    gap:25px;
 }
 
-.nav-links a{
+.links a{
     color:white;
     text-decoration:none;
-    transition:.3s;
+    transition:.25s;
 }
 
-.nav-links a:hover{
-    color:var(--accent);
+.links a:hover{
+    color:var(--blue);
 }
 
-section{
-    min-height:100vh;
-    padding:120px 40px 80px;
-    max-width:1200px;
-    margin:auto;
-}
+/* HERO */
 
 .hero{
+    min-height:100vh;
     display:flex;
-    flex-direction:column;
-    justify-content:center;
     align-items:center;
+    justify-content:center;
     text-align:center;
+    padding:40px;
+}
+
+.hero-content{
+    max-width:900px;
 }
 
 .hero h1{
-    font-size:4rem;
-    margin-bottom:1rem;
+    font-size:clamp(3rem,8vw,6rem);
+    line-height:1;
+}
+
+.gradient{
+    background:linear-gradient(
+        90deg,
+        var(--blue),
+        var(--purple)
+    );
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
 }
 
 .hero p{
-    max-width:700px;
+    margin-top:25px;
+    color:#cfcfcf;
     font-size:1.15rem;
-    opacity:.9;
+    line-height:1.7;
 }
 
-.version{
-    margin-top:20px;
-    color:var(--accent);
-    font-weight:bold;
+.version-badge{
+    display:inline-block;
+    margin-top:30px;
+    padding:12px 22px;
+    background:#111;
+    border:1px solid var(--border);
+    border-radius:999px;
+    color:var(--blue);
+    font-weight:600;
 }
 
-.button{
-    background:linear-gradient(135deg,var(--primary),var(--accent));
+/* BUTTONS */
+
+.hero-buttons{
+    margin-top:35px;
+}
+
+.btn{
     border:none;
-    color:white;
-    padding:14px 28px;
+    padding:15px 28px;
+    font-size:1rem;
     border-radius:12px;
     cursor:pointer;
-    margin:10px;
-    font-size:1rem;
     transition:.3s;
+    margin:6px;
 }
 
-.button:hover{
+.btn-primary{
+    background:var(--blue);
+    color:white;
+}
+
+.btn-secondary{
+    background:#121212;
+    color:white;
+    border:1px solid #222;
+}
+
+.btn:hover{
     transform:translateY(-3px);
 }
 
-.section-title{
-    text-align:center;
-    font-size:2.3rem;
-    margin-bottom:40px;
+/* SECTIONS */
+
+.section{
+    max-width:1400px;
+    margin:auto;
+    padding:100px 30px;
 }
 
-.grid{
+.section h2{
+    text-align:center;
+    font-size:3rem;
+    margin-bottom:50px;
+}
+
+/* FEATURES */
+
+.features{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
     gap:25px;
 }
 
 .card{
     background:var(--card);
     border:1px solid var(--border);
-    backdrop-filter:blur(15px);
-    border-radius:20px;
-    padding:25px;
+    border-radius:24px;
+    padding:30px;
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-6px);
+    border-color:var(--blue);
 }
 
 .card h3{
     margin-bottom:15px;
-    color:var(--accent);
 }
 
-.feature-list{
+/* EDITIONS */
+
+.editions{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:25px;
+}
+
+.edition{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:24px;
+    padding:30px;
+}
+
+.edition h3{
+    margin-bottom:20px;
+    color:var(--blue);
+}
+
+.edition ul{
     list-style:none;
 }
 
-.feature-list li{
-    margin:8px 0;
+.edition li{
+    margin-bottom:10px;
 }
 
-.download-area{
+/* DOWNLOAD */
+
+.download-panel{
     text-align:center;
+    background:#0d0d0d;
+    border:1px solid var(--border);
+    border-radius:25px;
+    padding:60px;
 }
 
-.footer{
+.download-panel h3{
+    font-size:2rem;
+    margin-bottom:15px;
+}
+
+.download-panel p{
+    color:#bdbdbd;
+    margin-bottom:25px;
+}
+
+/* FOOTER */
+
+footer{
     text-align:center;
-    padding:25px;
+    padding:30px;
+    color:#999;
     border-top:1px solid var(--border);
-    opacity:.8;
 }
 
-@media(max-width:768px){
+@media(max-width:800px){
 
-.hero h1{
-    font-size:2.5rem;
-}
-
-.nav-links{
-    gap:.6rem;
+.links{
+    gap:15px;
     font-size:.9rem;
 }
+
+.hero-buttons .btn{
+    width:100%;
+    max-width:320px;
 }
+
+}
+
 </style>
 </head>
 <body>
 
 <nav>
-    <div class="nav-container">
+    <div class="nav">
         <div class="logo">JackOS</div>
 
-        <div class="nav-links">
-            <a href="</a>
+        <div class="links">
+            #homeHome</a>
             #featuresFeatures</a>
             #editionsEditions</a>
             #downloadDownload / Launch</a>
@@ -200,52 +285,72 @@ section{
 
 <section id="home" class="hero">
 
-    <h1>Welcome to JackOS</h1>
+    <div class="hero-content">
 
-    <p>
-        A modern operating system designed for home users,
-        professionals, organisations and development teams.
-        Flexible editions, cloud capabilities and advanced tooling
-        all come together in one streamlined platform.
-    </p>
+        <h1>
+            Meet
+            <span class="gradient">JackOS</span>
+        </h1>
 
-    <div class="version" id="homeVersion">
-        JackOS vLoading...
+        <p>
+            A modern operating system built for everyday users,
+            businesses, creators and development teams.
+            Powerful, stylish and designed to evolve.
+        </p>
+
+        <div class="version-badge" id="versionHero">
+            JackOS vLoading...
+        </div>
+
+        <div class="hero-buttons">
+            <button class="btn btn-primary"
+                onclick="document.getElementById('download').scrollIntoView()">
+                Get Started
+            </button>
+
+            <button class="btn btn-secondary"
+                onclick="document.getElementById('features').scrollIntoView()">
+                Explore Features
+            </button>
+        </div>
+
     </div>
 
 </section>
 
-<section id="features">
+<section id="features" class="section">
 
-    <h2 class="section-title">Features</h2>
+    <h2>Features</h2>
 
-    <div class="grid">
+    <div class="features">
 
         <div class="card">
-            <h3>Multi Edition System</h3>
+            <h3>Multi Edition Platform</h3>
             <p>
-                Choose between Home, Private, Pro and Elite editions.
+                Home, Private, Pro and Elite editions
+                tailored for different users.
             </p>
         </div>
 
         <div class="card">
             <h3>Cloud Integration</h3>
             <p>
-                Sync devices, settings, wallpapers and backups.
+                Backup, sync and restore between devices.
             </p>
         </div>
 
         <div class="card">
             <h3>App Ecosystem</h3>
             <p>
-                Support for App Store downloads and .jka applications.
+                App Store access and support for .jka apps.
             </p>
         </div>
 
         <div class="card">
             <h3>Advanced Tools</h3>
             <p>
-                Sandbox environments, server content and development tools.
+                Sandbox environments, developer utilities
+                and server features.
             </p>
         </div>
 
@@ -253,95 +358,82 @@ section{
 
 </section>
 
-<section id="editions">
+<section id="editions" class="section">
 
-    <h2 class="section-title">JackOS Editions</h2>
+    <h2>Editions</h2>
 
-    <div class="grid">
+    <div class="editions">
 
-        <div class="card">
+        <div class="edition">
             <h3>🏠 Home</h3>
-            <ul class="feature-list">
+            <ul>
                 <li>✅ Explorer</li>
-                <li>✅ Photos</li>
                 <li>✅ Browser</li>
-                <li>✅ Calculator</li>
+                <li>✅ Photos</li>
                 <li>✅ Camera</li>
-                <li>✅ Settings</li>
-                <li>✅ System Import/Export</li>
-                <li>✅ Security Questions</li>
+                <li>✅ Calculator</li>
                 <li>✅ Multi-user Accounts</li>
             </ul>
         </div>
 
-        <div class="card">
+        <div class="edition">
             <h3>🏢 Private</h3>
-            <ul class="feature-list">
+            <ul>
                 <li>Everything in Home</li>
                 <li>✅ Cloud Sync</li>
-                <li>✅ Private Badge</li>
-                <li>✅ Extended Storage</li>
-                <li>✅ Wallpaper Sync</li>
                 <li>✅ App Store</li>
-                <li>✅ App Installation (.jka)</li>
-                <li>✅ Word Processor</li>
+                <li>✅ Extended Storage</li>
+                <li>✅ Word Processing</li>
                 <li>✅ Music Streaming</li>
             </ul>
         </div>
 
-        <div class="card">
+        <div class="edition">
             <h3>💼 Pro</h3>
-            <ul class="feature-list">
+            <ul>
                 <li>Everything in Private</li>
                 <li>✅ Sandbox Emulator</li>
-                <li>✅ Advanced Settings</li>
                 <li>✅ Server Libraries</li>
-                <li>✅ Early Access Features</li>
-                <li>✅ Pro Badge</li>
+                <li>✅ Early Access</li>
+                <li>✅ Advanced Settings</li>
             </ul>
         </div>
 
-        <div class="card">
+        <div class="edition">
             <h3>👑 Elite</h3>
-            <ul class="feature-list">
+            <ul>
                 <li>Everything in Pro</li>
                 <li>✅ JFE Access</li>
                 <li>✅ Beta Builds</li>
-                <li>✅ Development Tools</li>
-                <li>✅ Server Management</li>
-                <li>✅ Elite Activation</li>
+                <li>✅ Developer Tools</li>
                 <li>✅ Experimental Features</li>
-                <li>✅ Elite Badge</li>
             </ul>
         </div>
 
     </div>
 
-    <br><br>
-
-    <p style="text-align:center; opacity:.8;">
-        Note: Features may change over time.
-    </p>
-
 </section>
 
-<section id="download">
+<section id="download" class="section">
 
-    <h2 class="section-title">Download & Launch</h2>
+    <h2>Download & Launch</h2>
 
-    <div class="download-area">
+    <div class="download-panel">
 
-        <h3 id="downloadVersion">
+        <h3 id="versionDownload">
             JackOS vLoading...
         </h3>
 
-        <br>
+        <p>
+            Download the latest JackOS system files
+            or launch the latest available build.
+        </p>
 
-        <button class="button" onclick="comingSoon()">
+        <button class="btn btn-primary" onclick="comingSoon()">
             Download Latest System Files
         </button>
 
-        <button class="button" onclick="comingSoon()">
+        <button class="btn btn-secondary" onclick="comingSoon()">
             Launch Latest Version
         </button>
 
@@ -349,39 +441,30 @@ section{
 
 </section>
 
-<div class="footer">
-    <span id="footerVersion">JackOS vLoading...</span>
-</div>
+<footer id="footerVersion">
+    JackOS vLoading...
+</footer>
 
 <script>
+
 function comingSoon(){
     alert("Coming Soon");
 }
 
-/*
-Supports:
-const JACKOS_VERSION = "1.4 beta";
-or
-window.JACKOS_VERSION = "1.4 beta";
-*/
+const currentVersion =
+    typeof JACKOS_VERSION !== "undefined"
+    ? JACKOS_VERSION
+    : "Unknown";
 
-let version = "Unknown";
+document.getElementById("versionHero").textContent =
+    `JackOS v${currentVersion}`;
 
-if(typeof JACKOS_VERSION !== "undefined"){
-    version = JACKOS_VERSION;
-}
-else if(typeof window.JACKOS_VERSION !== "undefined"){
-    version = window.JACKOS_VERSION;
-}
-
-document.getElementById("homeVersion").textContent =
-    `JackOS v${version}`;
-
-document.getElementById("downloadVersion").textContent =
-    `JackOS v${version}`;
+document.getElementById("versionDownload").textContent =
+    `JackOS v${currentVersion}`;
 
 document.getElementById("footerVersion").textContent =
-    `JackOS v${version}`;
+    `JackOS v${currentVersion}`;
+
 </script>
 
 </body>
