@@ -473,17 +473,33 @@ installedAppRuntime.style.zIndex =
 
   }catch(e){ alert('Unable to launch application: '+e.message); }
 }
-async function AppStore_serverZipNames(){
-  for(const root of APP_STORE_ROOTS){
-    try{
-      const response=await fetch(root,{cache:'no-store'}); if(!response.ok) continue;
-      const text=await response.text(); const doc=new DOMParser().parseFromString(text,'text/html');
-      const names=[...doc.querySelectorAll('a')].map(a=>decodeURIComponent(a.getAttribute('href')||'')).filter(name=>name.toLowerCase().endsWith('.zip')).map(name=>name.split('/').pop());
-      return {root,names};
-    }catch(e){}
+async function AppStore_serverZipNames() {
+
+  for (const root of APP_STORE_ROOTS) {
+
+    try {
+
+      const response = await fetch(
+        root + "apps.json",
+        { cache: "no-store" }
+      );
+
+      if (!response.ok) continue;
+
+      const names = await response.json();
+      console.log("Apps found:", names);
+
+      return { root, names };
+
+    } catch (e) {
+      console.error(e);
+    }
+
   }
-  throw new Error('App Store unavailable');
+
+  throw new Error("App Store unavailable");
 }
+
 async function AppStore_serverPackages(){
   const source=await AppStore_serverZipNames(); const packages=[];
   for(const name of source.names){ try{ const response=await fetch(source.root+encodeURIComponent(name),{cache:'no-store'}); if(response.ok){ const pkg=await AppPackage_read(await response.blob()); if(pkg) packages.push(Object.assign({},pkg.manifest,{fileName:name,pkg})); } }catch(e){} }
