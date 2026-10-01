@@ -48,7 +48,7 @@ function Desktop_launch(appId){
 }
 
 // ZIP applications use the Applications directory as their registry.
-const APP_STORE_ROOTS = ['../JackOS-Server-Files/App-Store/Apps/','../JackOS-Server/Files/App-Store/Apps/'];
+const APP_STORE_ROOTS = ['JackOS.com/JackOS-Server-Files/App-Store/Apps/','JackOS.com/JackOS-Server/Files/App-Store/Apps/'];
 const InstalledAppsState = { apps: [], byFile: new Map() };
 let installedAppRuntime = null;
 
