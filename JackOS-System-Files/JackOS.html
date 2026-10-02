@@ -676,8 +676,12 @@ Media
 
 
 
+
+
+
 <!-- Data panel -->
 <div class="set-panel" id="settingsDataPanel" style="display:none;">
+  
   <h3 style="margin-top:0;">Data</h3>
 
   <div class="set-actions" style="margin-top:6px;">
@@ -689,10 +693,45 @@ Media
   </div>
 
 <div id="dataActions" style="margin-top:12px;"></div>
+<div id="systemImportArea" style="display:none;">
+<div
+  id="systemSelectedFile"
+  style="
+    margin-top:12px;
+    opacity:.8;
+    text-align:center;
+  "
+>
+  No file selected
+</div>
+    <div id="systemDropZone">
+        <div class="dropIcon">📁</div>
+        <div>Drop System Files Here</div>
+        <div class="dropSubtext">or upload from your computer</div>
+    </div>
 
+    <button id="systemUploadBtn">
+        Upload From Computer
+    </button>
+
+    <input
+        type="file"
+        id="systemFileInput"
+        hidden
+    >
+
+</div>
   <div class="set-actions" style="margin-top:12px;">
-    <button class="explorer-btn ghost" onclick="Settings_backToMain()">Back</button>
-  </div>
+  <button
+  class="explorer-btn ghost"
+  onclick="
+    document.getElementById('systemImportArea').style.display='none';
+    Settings_backToMain();
+  "
+>
+  Back
+</button>
+</div>
 </div>
   </div>
 </div>
@@ -942,14 +981,7 @@ Media
   accept=".zip"
   style="display:none"
 />
-<!-- Another Random thingy needed for System Import :D -->
 
-<input
-  type="file"
-  id="systemImportInput"
-  accept=".zip,application/zip"
-  style="display:none"
-/>
 <!-- Sandbox Emulator Window -->
 <div id="sandboxWindow">
 

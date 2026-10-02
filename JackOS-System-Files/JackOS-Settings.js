@@ -386,7 +386,15 @@ const sandboxBtn =
 
 
 
-function Settings_close(){ const win=document.getElementById('settingsWin'); if(win){ win.style.display='none'; } }
+function Settings_close(){ 
+  
+  document.getElementById(
+  "systemImportArea"
+).style.display = "none";
+  
+  const win=document.getElementById('settingsWin'); if(win){ win.style.display='none'; } 
+
+}
 function Settings_renderAccList(){ const cont=document.getElementById('settingsAccList'); cont.innerHTML=''; const list=Users_all(); if(!list.length){ cont.innerHTML='<div style="opacity:.8;">No accounts yet.</div>'; return; }
   list.forEach(u=>{ const row=document.createElement('div'); row.className='acc-row'; const left=document.createElement('div'); left.innerHTML = `👤 <b>${u.name}</b> <span class="badge ${u.role}">${u.guest?'Guest':u.role}</span>`; const btnAdmin=document.createElement('button'); btnAdmin.className='explorer-btn'; btnAdmin.textContent = (u.role==='admin'? 'Remove Admin' : 'Make Admin'); btnAdmin.disabled = !!u.guest || (u.role==='admin' && Users_countAdmins(list)<=1); btnAdmin.onclick = ()=> Settings_makeAdmin(u.name);
     const btnPw=document.createElement('button'); btnPw.className='explorer-btn'; btnPw.textContent='Change password'; btnPw.onclick=()=> Settings_changePassword(u.name);

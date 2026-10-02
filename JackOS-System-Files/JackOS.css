@@ -1136,3 +1136,38 @@ background .15s ease;
   width:24px !important;
   height:24px !important;
 }
+
+
+
+
+
+
+
+#systemDropZone{
+    border:2px dashed #666;
+    border-radius:12px;
+    padding:30px;
+    text-align:center;
+    transition:.2s;
+    margin-bottom:12px;
+}
+
+#systemDropZone.dragover{
+    border-color:#4da3ff;
+    background:rgba(77,163,255,.15);
+}
+
+.dropIcon{
+    font-size:48px;
+    margin-bottom:10px;
+}
+
+.dropSubtext{
+    opacity:.7;
+    font-size:12px;
+    margin-top:5px;
+}
+
+#systemUploadBtn{
+    width:100%;
+}

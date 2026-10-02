@@ -259,7 +259,17 @@ async function System_export(
 
   }
 }
-function System_import(){ Admin_requireStrict(()=>document.getElementById('systemImportInput')?.click()); }
+function System_import(){
+
+  Admin_requireStrict(() => {
+
+    document.getElementById(
+      "systemImportArea"
+    ).style.display = "block";
+
+  });
+
+}
 async function Backup_writeDirectory(zip, archivePath, destinationPath, root){ const parts=destinationPath.split('/').filter(Boolean); const fileName=parts.pop(); let dir=root; for(const part of parts) dir=await dir.getDirectoryHandle(part,{create:true}); const handle=await dir.getFileHandle(fileName,{create:true}); const writable=await handle.createWritable(); await writable.write(await zip.file(archivePath).async('arraybuffer')); await writable.close(); }
 async function Backup_restore(file){
   const zip=await JSZip.loadAsync(file); const manifestPath=Object.keys(zip.files).find(path=>!zip.files[path].dir&&path.split('/').pop().toLowerCase()==='manifest.json'); const manifestFile=manifestPath&&zip.file(manifestPath); if(!manifestFile) throw new Error('This ZIP is not a JackOS system backup.'); const manifest=JSON.parse(await manifestFile.async('text'));
@@ -541,7 +551,10 @@ for(const incoming of manifest.accounts){
 alert(
   "System restored.\n\nJackOS will restart."
 );
-
+document.getElementById(
+  "systemImportArea"
+).style.display =
+  "none";
 location.reload();
 
 
@@ -551,8 +564,9 @@ location.reload();
 
   
   
+
+
 }
-ready(()=>{ const input=document.getElementById('systemImportInput'); if(input) input.addEventListener('change',async()=>{ const file=input.files?.[0]; input.value=''; if(!file) return; try{ await Backup_restore(file); }catch(e){ alert('System import failed: '+e.message); } }); });
 function exportWallpaperSettings(){ return {wallpaper:localStorage.getItem('jackosWallpaper'),wallpaperData:localStorage.getItem('jackosWallpaperData')}; }
 function importWallpaperSettings(data){ if(!data) return; if(data.wallpaper===null) localStorage.removeItem('jackosWallpaper'); else localStorage.setItem('jackosWallpaper',data.wallpaper); if(data.wallpaperData===null) localStorage.removeItem('jackosWallpaperData'); else localStorage.setItem('jackosWallpaperData',data.wallpaperData); }
 function exportSecurityQuestions(){ const out={}; Users_all().forEach(user=>{ const value=localStorage.getItem('SecQ:'+user.name); if(value) out[user.name]=JSON.parse(value); }); return out; }
@@ -659,3 +673,119 @@ async function Backup_clearOPFS(){
 }
 
 
+
+ready(() => {
+
+  const dropZone =
+    document.getElementById(
+      "systemDropZone"
+    );
+
+  const uploadBtn =
+    document.getElementById(
+      "systemUploadBtn"
+    );
+
+  const input =
+    document.getElementById(
+      "systemFileInput"
+    );
+
+  if(!dropZone || !uploadBtn || !input)
+    return;
+
+  uploadBtn.onclick = () => {
+    input.click();
+  };
+
+  input.addEventListener(
+    "change",
+    async e => {
+
+      const file =
+        e.target.files?.[0];
+
+      if(!file) return;
+
+
+      document.getElementById(
+"systemSelectedFile"
+).textContent =
+file.name;
+      try{
+
+        await Backup_restore(file);
+
+      }catch(error){
+
+        alert(
+          "System import failed: " +
+          error.message
+        );
+
+      }
+
+      input.value = "";
+
+    }
+  );
+
+  dropZone.addEventListener(
+    "dragover",
+    e => {
+
+      e.preventDefault();
+
+      dropZone.classList.add(
+        "dragover"
+      );
+
+    }
+  );
+
+  dropZone.addEventListener(
+    "dragleave",
+    () => {
+
+      dropZone.classList.remove(
+        "dragover"
+      );
+
+    }
+  );
+
+  dropZone.addEventListener(
+    "drop",
+    async e => {
+
+      e.preventDefault();
+
+      dropZone.classList.remove(
+        "dragover"
+      );
+
+      const file =
+        e.dataTransfer.files?.[0];
+
+      if(!file) return;
+document.getElementById(
+"systemSelectedFile"
+).textContent =
+file.name;
+      try{
+
+        await Backup_restore(file);
+
+      }catch(error){
+
+        alert(
+          "System import failed: " +
+          error.message
+        );
+
+      }
+
+    }
+  );
+
+});
