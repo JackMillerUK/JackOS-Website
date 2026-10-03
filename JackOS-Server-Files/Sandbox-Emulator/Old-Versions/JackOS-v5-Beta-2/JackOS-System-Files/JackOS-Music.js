@@ -108,7 +108,7 @@ async function Music_fetchJsonOrText(path){
   return await response.text();
 }
 async function Music_loadCatalogue(){
-  const indexText=await Music_fetchJsonOrText(`${JACKOS_SERVER_ROOT}Music/SongData.jks`);
+  const indexText=await Music_fetchJsonOrText(`${JACKOS_SERVER_ROOT}Music/Song-Files/Song-List.json`);
   let indexRaw;
   try{ indexRaw=JSON.parse(indexText); }catch(e){ indexRaw=indexText; }
   const entries=Music_catalogueEntries(indexRaw);

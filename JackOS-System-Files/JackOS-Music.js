@@ -58,20 +58,7 @@ async function Music_loadStoredLibrary(){
   return fallback;
 }
 let musicLibraryQueue=Promise.resolve();
-function Music_parseJks(text){
-  const value=(text||'').trim();
-  if(!value) return {};
-  try{
-    const parsed=JSON.parse(value);
-    if(parsed && typeof parsed==='object') return parsed;
-  }catch(e){}
-  const result={};
-  value.split(/\r?\n/).forEach(line=>{
-    const match=line.match(/^\s*([^:=#]+?)\s*[:=]\s*(.*?)\s*$/);
-    if(match) result[match[1].trim().toLowerCase().replace(/[\s-]+/g,'_')]=match[2].trim();
-  });
-  return result;
-}
+
 function Music_pick(obj, keys, fallback=''){
   for(const key of keys){ if(obj && obj[key] !== undefined && obj[key] !== null && obj[key] !== '') return String(obj[key]); }
   return fallback;
@@ -80,114 +67,176 @@ function Music_normalizeSong(raw, id){
   const song=raw || {};
   const fallbackName=String(song.fileName || song.filename || id || '').split('/').pop();
   return {
-    id: String(song.id || song.slug || song.file || song.filename || id || ''),
-    title: Music_pick(song,['title','song_title','name'],fallbackName || 'Untitled song'),
-    artist: Music_pick(song,['artist','artist_name'],fallbackName || 'Unknown artist'),
-    album: Music_pick(song,['album','album_name'],'Unknown album'),
-    artworkPath: Music_pick(song,['artworkPath','artwork','albumArtwork','album_artwork','cover'],''),
-    audioPath: Music_pick(song,['audioPath','audio','audioFile','audio_file','filePath','file_path'],'')
-  };
+  id: String(
+    song.id ||
+    song.slug ||
+    id ||
+    ''
+  ),
+
+  title: Music_pick(
+    song,
+    ['title'],
+    fallbackName
+  ),
+
+  artist: Music_pick(
+    song,
+    ['artist'],
+    'Unknown Artist'
+  ),
+
+  album: Music_pick(
+    song,
+    ['album'],
+    'Unknown Album'
+  )
+};
 }
-function Music_catalogueEntries(raw){
-  if(Array.isArray(raw)) return raw;
-  if(raw && Array.isArray(raw.songs)) return raw.songs;
-  if(raw && Array.isArray(raw.files)) return raw.files;
-  if(typeof raw==='string') return raw.split(/\r?\n/).map(line=>line.trim()).filter(line=>line && !line.startsWith('#'));
-  return [];
-}
-function Music_path(path, folder){
-  const clean=String(path||'').trim().replace(/^\.\//,'');
-  if(!clean) return '';
-  if(/^(https?:|data:|blob:|\/)/i.test(clean)) return clean;
-  if(clean.startsWith('Music/')) return JACKOS_SERVER_ROOT + clean;
-  return JACKOS_SERVER_ROOT + (folder ? `Music/${folder}/${clean}` : `Music/${clean}`);
-}
+
+
 function Music_id(song){ return song.id || `${song.title}|${song.artist}|${song.album}`; }
-async function Music_fetchJsonOrText(path){
-  const response=await fetch(path, {cache:'no-store'});
-  if(!response.ok) throw new Error(`Unable to load ${path}`);
-  return await response.text();
-}
+
 async function Music_loadCatalogue(){
 
-  const response = await fetch(
-    `${JACKOS_SERVER_ROOT}Music/Song-Files/Song-List.json`,
-    { cache:'no-store' }
+  const listResponse = await fetch(
+    `${JACKOS_SERVER_ROOT}Music/Songs.json`,
+    {
+      cache:'no-store'
+    }
   );
 
-  if(!response.ok){
+  if(!listResponse.ok){
     throw new Error(
-      'Music catalogue unavailable, showing your library instead.'
+      'Music catalogue unavailable'
     );
   }
 
-  const entries =
-    await response.json();
+  const zipList =
+    await listResponse.json();
 
   const songs=[];
 
-  for(const entry of entries){
-
-    const definitionPath=
-      typeof entry==='string'
-        ? entry
-        : (
-            entry.file
-            || entry.path
-            || entry.songFile
-            || entry.song_file
-            || ''
-          );
-
-    if(!definitionPath)
-      continue;
-
-    const path=
-      definitionPath.startsWith(
-        'Music/'
-      )
-        ? JACKOS_SERVER_ROOT
-            + definitionPath
-        : `${JACKOS_SERVER_ROOT}Music/Song-Files/${definitionPath}`;
+  for(const zipPath of zipList){
 
     try{
 
-      const definitionText=
-        await Music_fetchJsonOrText(
-          path
+      const zipUrl =
+        `${JACKOS_SERVER_ROOT}Music/${zipPath}`;
+
+      const response =
+        await fetch(zipUrl);
+
+      if(!response.ok)
+        continue;
+
+      const blob =
+        await response.blob();
+
+      const zip =
+        await JSZip.loadAsync(blob);
+
+      const jsonFiles =
+        Object.keys(zip.files)
+          .filter(name =>
+            name.toLowerCase()
+                .endsWith('.json')
+          );
+
+      if(jsonFiles.length !== 1){
+
+        console.warn(
+          'Song skipped (must contain exactly one JSON):',
+          zipPath
         );
 
-      const definition=
-        Music_parseJks(
-          definitionText
+        continue;
+
+      }
+
+      const metadata =
+        JSON.parse(
+          await zip.file(
+            jsonFiles[0]
+          ).async('text')
         );
 
-      const song=
-        Music_normalizeSong(
-          typeof entry==='string'
-            ? definition
-            : Object.assign(
-                {},
-                entry,
-                definition
-              ),
-          definitionPath
+      const audioFile =
+        zip.file(
+          metadata.audio
         );
 
-      song.definitionPath=path;
-      song.definitionJks=definitionText;
-      song.audioUrl=Music_path(
-        song.audioPath,
-        'Songs'
-      );
+      if(!audioFile){
 
-      songs.push(song);
+        console.warn(
+          'Song skipped (missing audio):',
+          zipPath
+        );
 
-    }catch(e){
+        continue;
+
+      }
+
+      const audioBlob =
+        await audioFile.async(
+          'blob'
+        );
+
+      const audioData =
+        URL.createObjectURL(
+          audioBlob
+        );
+
+      let artworkData =
+        `${JACKOS_SERVER_ROOT}Music/Trans-Music.png`;
+
+      if(
+        metadata.artwork &&
+        zip.file(
+          metadata.artwork
+        )
+      ){
+
+        const artworkBlob =
+          await zip.file(
+            metadata.artwork
+          ).async('blob');
+
+        artworkData =
+          URL.createObjectURL(
+            artworkBlob
+          );
+
+      }
+
+      songs.push({
+
+        id: zipPath,
+
+        title:
+          metadata.title ||
+          'Untitled Song',
+
+        artist:
+          metadata.artist ||
+          'Unknown Artist',
+
+        album:
+          metadata.album ||
+          'Unknown Album',
+
+        artworkData,
+
+        audioData
+
+      });
+
+    }catch(error){
 
       console.warn(
-        'Music song definition skipped:',
-        path
+        'Song skipped:',
+        zipPath,
+        error
       );
 
     }
@@ -202,17 +251,25 @@ async function Music_ensureSystem(){
   if(navigator.storage?.getDirectory){
     try{
       const music=await Music_directory();
-      await music.getDirectoryHandle('Songs',{create:true});
-      await music.getDirectoryHandle('Song-Files',{create:true});
-      const libraryHandle=await music.getFileHandle('Library.jks',{create:true});
+
+const libraryHandle=
+  await music.getFileHandle(
+    'Library.jks',
+    {create:true}
+  );
+
       const libraryText=await (await libraryHandle.getFile()).text();
       if(!libraryText.trim()) await libraryHandle.createWritable().then(async writable=>{ await writable.write(localStorage.getItem(Music_libraryKey())||'[]'); await writable.close(); });
     }catch(e){ /* The localStorage library remains the portable fallback. */ }
   }
 }
 function Music_artworkUrl(song){
-  if(song.artworkData) return song.artworkData;
-  return Music_path(song.artworkPath,'');
+
+  return (
+    song.artworkData ||
+    `${JACKOS_SERVER_ROOT}Music/Trans-Music.png`
+  );
+
 }
 function Music_revokeArtworkUrls(){
   for(const url of MusicState.artworkUrls.values()) URL.revokeObjectURL(url);
@@ -272,34 +329,106 @@ function Music_setMode(mode){
   Music_render();
 }
 async function Music_addToLibrary(song, button){
-  if(!song.audioUrl){ alert('This song has no audio file.'); return; }
+  if(!song.audioData){ alert('This song has no audio file.'); return; }
   try{
-    const audioResponse=await fetch(song.audioUrl); if(!audioResponse.ok) throw new Error('Audio unavailable');
+    
+    const audioResponse =
+  await fetch(song.audioData);
+    if(!audioResponse.ok) throw new Error('Audio unavailable');
     const audioBlob=await audioResponse.blob();
     const audioData=await new Promise((resolve,reject)=>{ const reader=new FileReader(); reader.onload=()=>resolve(reader.result); reader.onerror=reject; reader.readAsDataURL(audioBlob); });
-    let artworkData='';
-    if(song.artworkPath){ try{ const art=await fetch(Music_artworkUrl(song)); if(art.ok){ const blob=await art.blob(); artworkData=await new Promise((resolve,reject)=>{ const reader=new FileReader(); reader.onload=()=>resolve(reader.result); reader.onerror=reject; reader.readAsDataURL(blob); }); } }catch(e){} }
-    const savedSong=Object.assign({},song,{audioData,artworkData});
-    musicLibraryQueue=musicLibraryQueue.then(async()=>{
-      const library=(await Music_readLibraryFile()) || Music_defaultLibrary();
-      if(library.some(item=>Music_id(item)===Music_id(savedSong))){
-        MusicState.library=library;
-        if(button){ button.textContent='Added to library'; button.title='Already in library'; button.disabled=true; }
+   
+   
+   
+   
+   
+   const artworkData =
+  song.artworkData || '';
+
+const savedSong =
+  Object.assign(
+    {},
+    song,
+    {
+      audioData,
+      artworkData
+    }
+  );
+
+musicLibraryQueue =
+  musicLibraryQueue.then(
+    async() => {
+
+      const library =
+        (
+          await Music_readLibraryFile()
+        ) ||
+        Music_defaultLibrary();
+
+      if(
+        library.some(
+          item =>
+            Music_id(item) ===
+            Music_id(savedSong)
+        )
+      ){
+
+        MusicState.library =
+          library;
+
+        if(button){
+
+          button.textContent =
+            'Added to library';
+
+          button.title =
+            'Already in library';
+
+          button.disabled =
+            true;
+
+        }
+
         return;
+
       }
-      library.push(savedSong);
-      await Music_saveLibrary(library);
-      MusicState.library=library;
+
+      library.push(
+        savedSong
+      );
+
+      await Music_saveLibrary(
+        library
+      );
+
+      MusicState.library =
+        library;
+
       Music_render();
-    });
-    await musicLibraryQueue;
-  }catch(e){ alert('Could not add this song to your library.'); }
+
+    }
+  );
+
+await musicLibraryQueue;
+
+}catch(e){
+
+  alert(
+    'Could not add this song to your library.'
+  );
+
+}
+
 }
 async function Music_play(index){
   const songs=MusicState.mode==='library' ? MusicState.library : MusicState.catalogue;
   const song=songs[index]; if(!song || !MusicState.audio) return;
   MusicState.currentIndex=index; MusicState.currentSong=song;
-  MusicState.audio.src=MusicState.mode==='library' ? song.audioData : song.audioUrl;
+  
+  
+  MusicState.audio.src =
+  song.audioData;
+
   MusicState.audio.load();
   document.getElementById('musicPlayerTitle').textContent=song.title;
   document.getElementById('musicPlayerArtist').textContent=`${song.artist} · ${song.album}`;
