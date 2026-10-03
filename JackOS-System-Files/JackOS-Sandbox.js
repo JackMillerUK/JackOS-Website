@@ -1,3 +1,4 @@
+//JackOS-Sandbox.js
 // JackOS Sandbox Emulator FOR PRO AND ELITE ONLY
 let SE_CURRENT_VERSION = null;
 

@@ -1,3 +1,4 @@
+//JackOS-SecurityQuestions.js
 // Security questions
 window.SecQ_setupLater = function(){ 
   const d = document.getElementById('secqSetupDialog'); 

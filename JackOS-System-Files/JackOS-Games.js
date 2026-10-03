@@ -1,3 +1,5 @@
+//JackOS-Games.js
+// ===== Games =====
 const GAME_SCORE_KEY = 'jackos_game_scores_v1';
 const GAME_SCORE_FILE = 'jackos-scores.json';
 

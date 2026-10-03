@@ -1,3 +1,6 @@
+//JackOS-Backup.js
+
+
 // Complete account backup and restore.
 async function Backup_addDirectory(zip, dir, path){
   for await(const entry of dir.values()){

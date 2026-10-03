@@ -1,3 +1,4 @@
+//JackOS-Calculator.js
 // ===== Calculator =====
 const CalculatorState = { current: '0', prev: null, op: null, justEval: false };
 function Calculator_open(){ const win=document.getElementById('calcApp'); if(win){ win.style.display='block'; } Calculator_render(); }

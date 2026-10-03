@@ -1,3 +1,6 @@
+//JackOS-Desktop.js
+// ===== Desktop =====
+
 const SCREENS=['startup','setup','login','transition','desktop'];
 function show(id, fade=false){ const target=document.getElementById(id); if(!target) return; if(fade){ const f=document.getElementById('fadeOverlay'); f.classList.add('show'); setTimeout(()=>{ SCREENS.forEach(s=>{const el=document.getElementById(s); if(el) el.classList.remove('active');}); target.classList.add('active'); setTimeout(()=>f.classList.remove('show'), 250); },220); } else { SCREENS.forEach(s=>{const el=document.getElementById(s); if(el) el.classList.remove('active');}); target.classList.add('active'); }
   if(id==='desktop'){ applySavedWallpaper(); Desktop_UpdateEditionFeatures(); }

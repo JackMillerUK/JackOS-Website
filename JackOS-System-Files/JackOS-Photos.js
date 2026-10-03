@@ -1,3 +1,4 @@
+//JackOS-Photos.js
 // ===== Photos app =====
   const PhotosState={ selecting:false, selected:new Set() };
   async function Desktop_openPhotosApp(){ const app=document.getElementById('photosApp'); app.style.display='block'; await Photos_refreshGrid(); }

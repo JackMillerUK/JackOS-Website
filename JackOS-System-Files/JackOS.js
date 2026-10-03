@@ -1,4 +1,5 @@
-/* JackOS Core JS (v5 Beta 3 19th September 2026 Release)*/
+//JackOS.js
+// JackOS Core JS (v5 Beta 3 19th September 2026 Release)
 
 
 

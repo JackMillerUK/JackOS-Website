@@ -1,3 +1,4 @@
+//JackOS-Settings.js
 // ===== Settings (accounts + admin transfer) =====
 // Show the Accounts panel (called when user clicks "Accounts" button)
 function Settings_showAccounts(){

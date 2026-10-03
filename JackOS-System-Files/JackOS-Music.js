@@ -1,3 +1,4 @@
+//JackOS-Music.js
 // ===== Music =====
 const JACKOS_SERVER_ROOT = '../JackOS-Server-Files/';
 const MusicState = {
@@ -108,28 +109,93 @@ async function Music_fetchJsonOrText(path){
   return await response.text();
 }
 async function Music_loadCatalogue(){
-  const indexText=await Music_fetchJsonOrText(`${JACKOS_SERVER_ROOT}Music/SongData.jks`);
-  let indexRaw;
-  try{ indexRaw=JSON.parse(indexText); }catch(e){ indexRaw=indexText; }
-  const entries=Music_catalogueEntries(indexRaw);
+
+  const response = await fetch(
+    `${JACKOS_SERVER_ROOT}Music/Song-Files/Song-List.json`,
+    { cache:'no-store' }
+  );
+
+  if(!response.ok){
+    throw new Error(
+      'Music catalogue unavailable, showing your library instead.'
+    );
+  }
+
+  const entries =
+    await response.json();
+
   const songs=[];
+
   for(const entry of entries){
-    const definitionPath=typeof entry==='string' ? entry : (entry.file || entry.path || entry.songFile || entry.song_file || '');
-    if(!definitionPath) continue;
-    const path=definitionPath.startsWith('Music/')
-      ? JACKOS_SERVER_ROOT + definitionPath
-      : `${JACKOS_SERVER_ROOT}Music/Song-Files/${definitionPath}`;
+
+    const definitionPath=
+      typeof entry==='string'
+        ? entry
+        : (
+            entry.file
+            || entry.path
+            || entry.songFile
+            || entry.song_file
+            || ''
+          );
+
+    if(!definitionPath)
+      continue;
+
+    const path=
+      definitionPath.startsWith(
+        'Music/'
+      )
+        ? JACKOS_SERVER_ROOT
+            + definitionPath
+        : `${JACKOS_SERVER_ROOT}Music/Song-Files/${definitionPath}`;
+
     try{
-      const definitionText=await Music_fetchJsonOrText(path);
-      const definition=Music_parseJks(definitionText);
-      const song=Music_normalizeSong(typeof entry==='string' ? definition : Object.assign({}, entry, definition), definitionPath);
+
+      const definitionText=
+        await Music_fetchJsonOrText(
+          path
+        );
+
+      const definition=
+        Music_parseJks(
+          definitionText
+        );
+
+      const song=
+        Music_normalizeSong(
+          typeof entry==='string'
+            ? definition
+            : Object.assign(
+                {},
+                entry,
+                definition
+              ),
+          definitionPath
+        );
+
       song.definitionPath=path;
       song.definitionJks=definitionText;
-      song.audioUrl=Music_path(song.audioPath,'Songs');
+      song.audioUrl=Music_path(
+        song.audioPath,
+        'Songs'
+      );
+
       songs.push(song);
-    }catch(e){ console.warn('Music song definition skipped:', path); }
+
+    }catch(e){
+
+      console.warn(
+        'Music song definition skipped:',
+        path
+      );
+
+    }
+
   }
+
   return songs;
+
 }
 async function Music_ensureSystem(){
   if(localStorage.getItem(Music_libraryKey()) === null) Music_saveLibrary([]);
@@ -295,7 +361,13 @@ async function Music_open(){
   await Music_ensureSystem(); MusicState.library=await Music_loadStoredLibrary();
   const notice=document.getElementById('musicNotice'); if(notice) notice.textContent='Loading catalogue...';
   try{ MusicState.catalogue=await Music_loadCatalogue(); MusicState.offline=false; if(notice) notice.textContent=''; Music_setMode('home'); }
-  catch(e){ MusicState.offline=true; if(notice) notice.textContent='Connection offline, showing music in your library.'; Music_setMode('library'); }
+  catch(e){ MusicState.offline=true; 
+    
+    if(notice)
+    notice.textContent =
+        'Music catalogue unavailable, showing your library instead.';
+
+    Music_setMode('library'); }
 }
 function Music_close(){
 

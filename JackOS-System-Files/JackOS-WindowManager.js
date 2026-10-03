@@ -1,3 +1,4 @@
+//JackOS-WindowManager.js
 // This file is the Window Manager.
 //
 // Created during JackOS v5 Beta 3.

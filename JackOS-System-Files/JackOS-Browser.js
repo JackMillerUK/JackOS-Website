@@ -1,3 +1,4 @@
+//JackOS-Browser.js
 // ===== Browser =====
 const BROWSER_HOME = localStorage.getItem('jackosBrowserHome') || 'purplemash.com';
 const browserState = { history: [], index: -1, frame: null, urlInput: null, fb: null, win: null };

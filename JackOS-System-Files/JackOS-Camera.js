@@ -1,3 +1,4 @@
+//JackOS-Camera.js
 // ===== JCam (camera) =====
   const JCamState = { stream:null, facing:null, video:null, canvas:null };
   function JCam_status(msg){ try{ const s=document.getElementById('jcamStatus'); if(s) s.textContent=msg||''; }catch(e){} }
